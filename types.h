@@ -86,7 +86,9 @@ struct input_opt{
 typedef struct input_opt input_options;
 
 struct test_input_opt{
-	
+	char inputfile[255];
+	char outfile[255];
+	int save_output;
 };
 typedef struct test_input_opt test_input_options;
 

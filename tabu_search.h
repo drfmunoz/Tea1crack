@@ -68,5 +68,5 @@ void restart_right(unsigned long *);
 ts_params *create_params(input_options *);
 tabu_list *create_tabu_list(ts_params *);
 void restart_tabu(tabu_list *,ts_params *);
-
+void free_tabu(tabu_list *,unsigned int);
 #endif

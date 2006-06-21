@@ -88,25 +88,17 @@ int main(int argc,char** argv){
 	}
 		
 	/* end report creation options */
-	
-	
-	
-	/* read input file */
+
+	/* read input from file */
 	cipher=read_input(options->inputfile);
 	/* perform tabu search */
 	fprintf(stdout,"INIT TABU SEARCH\n");
-	
-	/* which is the best result accord to parameters*/
 	tabusearch(cipher,options,report);
-
 	fprintf(stdout,"END TABU SEARCH\n");
 	/* end program */
-	
-	
 	if(options->save_output){
 		fclose(outreport);
 	}
-	
 	free((char *)options);
 	free((char *)report);
 	free((char *)cipher);

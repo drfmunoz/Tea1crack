@@ -1,0 +1,2 @@
+re-formulate cipher_cont* read_input(char* filename) for io.c
+ : may a good approach would be dinamical file read
