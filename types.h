@@ -1,5 +1,5 @@
-#ifndef _STRUCTS_HEADER_
-#define _STRUCTS_HEADER_
+#ifndef _STRUCTS_TYPES_HEADER_
+#define _STRUCTS_TYPES_HEADER_
 #include <time.h>
 
 #define TRUE 1
@@ -11,11 +11,59 @@
 #define MALLOC(type) (type *)malloc(sizeof(type))
 #define NMALLOC(n,type) (type *)malloc(n*sizeof(type))
 
-/* how many bits has the key */
-#define KBITS 128
+/*
+ *
+ * IO AND CONTAINER DATA STRUCTURES -------------------------------------------
+ * 
+ */
 
-/* how many bits has the message */
-#define MBITS 64
+
+/*
+ * data structure for input data
+ */
+
+struct container_node{
+	unsigned long plain_message[2];     /* 64 bits message splited in two 32 bits blocks */
+	unsigned long cipher_message[2];    /* 64 bits cipher message splited in two 32 bits blocks */
+	int size_array;					    /* number of keys */
+};
+typedef struct container_node cipher_cont;
+
+/*
+ * general tabu search options data structure
+ */
+struct input_opt{
+	int have_input;                       /* if have input file */
+	int generate_report;                  /* if generate report (ALWAYS TRUE) */
+	int save_output;					  /* if save output to a file */
+	int paranoid_leve;				      /* wich paranoid level would be used (DEFAULT 0) */
+	int middle_op;						  /* if it's necesary to print middle operations */
+	int print_iter;						  /* if it's necesary to print iteration operations */
+	char inputfile[255];				  /* name for the input file */
+	char outfile[255];					  /* name for the output file */
+	unsigned long long tabu_list_length;  /* tabu list lenght (DEFAULT 0) */
+	unsigned long long tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
+	unsigned long long tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
+	unsigned long long change_move_limit; /* tabu number of mistakes to change movement*/
+	float key_eval_percent;               /* percer for evaluation key */ 
+};
+typedef struct input_opt input_options;
+
+/*
+ * general test options data structure
+ */
+struct test_input_opt{
+	char inputfile[255];
+	char outfile[255];
+	int save_output;
+};
+typedef struct test_input_opt test_input_options;
+	
+/*
+ *
+ * TABU SEARCH SPECIFIC DATA STRUCTURES -------------------------------------------
+ * 
+ */
 
 
 /* 
@@ -30,72 +78,41 @@ struct tabu_list{
 };
 typedef struct tabu_list tabu_list;
 
+
 /*
  * best result data structure
  */
 struct best_result{
 	unsigned long key[2];      /* key value for this result */
 	float value;               /* evalutation value for this result */
-	unsigned int bit;
+	unsigned int bit;          /* bit modified for this result */
 };
 typedef struct best_result best_result;
 
 
+/*
+ * tabu search parameter data structure
+ */
 struct tabu_search_params{
-	unsigned long long tabu_list_length;
-	unsigned long long tabu_iterations;
-	unsigned long long tabu_max_decrease;
-	unsigned long long change_move_limit;
-	float key_eval_percent;
+	unsigned long long tabu_list_length;  /* tabu list length */
+	unsigned long long tabu_iterations;   /* maximal number of iterations */
+	unsigned long long tabu_max_decrease; /* performance decreace limit */
+	unsigned long long change_move_limit; /* mistakes for change the movement */
+	float key_eval_percent;               /* percent of equality of key bits*/
 };
 typedef struct tabu_search_params ts_params;
 
 
-/******* ts ******/
-
 /*
- * data structure for input data
+ *
+ * REPORT GENERATION AND PARANOID DATA STRUCUTRES -------------------------------------------
+ * 
  */
 
-struct container_node{
-	unsigned long plain_message[2];
-	unsigned long key[4];
-	unsigned long cipher_message[2];
-	int size_array;
-};
-typedef struct container_node cipher_cont;
-
-
-struct input_opt{
-	int have_input;
-	int generate_report;
-	int save_output;
-	
-	int paranoid_leve;
-	int middle_op;
-	int print_iter;
-	
-	char inputfile[255];
-	char outfile[255];
-	unsigned long long tabu_list_length;
-	unsigned long long tabu_iterations;
-	unsigned long long tabu_max_decrease;
-	unsigned long long change_move_limit;	
-	float key_eval_percent;
-};
-typedef struct input_opt input_options;
-
-struct test_input_opt{
-	char inputfile[255];
-	char outfile[255];
-	int save_output;
-};
-typedef struct test_input_opt test_input_options;
 
 /*
  * printing report level structures
  */
-
 struct final_report{
 	best_result *left;
 	best_result *right;
@@ -126,6 +143,14 @@ struct paranoid_level{
 	unsigned int tabu;
 	unsigned long evalkey;
 	tabu_list *list;
+	
+	
+	unsigned int percent;
+	unsigned int zeros;
+	unsigned int ones;
+	unsigned int element;
+
+
 };
 typedef struct paranoid_level paranoid;
 
@@ -141,18 +166,20 @@ struct output_report{
 	void (*print_iteration)(best_result *,int,int,FILE *);
 	void (*print_paranoid)(paranoid *,FILE *);
 	void (*print_paranoid_move)(paranoid *,FILE *);
+	void (*print_paranoid_eval)(paranoid *,FILE *);
 	void (*print_paranoid_all)(paranoid *,FILE *);
 };
 typedef struct output_report output_report;
 
 
-
+/*
+ *  tabu search movement data structure
+ */
 struct tabu_movement{
+	/* movement function pointier definition */
 	void (*move)(unsigned long *,tabu_list *,unsigned long *,unsigned int *,unsigned int *,best_result *,ts_params *,output_report *,cipher_cont *,int);
 };
 typedef struct tabu_movement movement;
-
-
 
 
 #endif

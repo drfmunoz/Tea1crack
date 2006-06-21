@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
+
 #include "tabu_search.h"
 #include "tea.h"
 #include "io.h"
@@ -273,45 +274,34 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 	*/
 	
 	unsigned long composed_key[4]={0x0,0x0,0x0,0x0};
-	
 	unsigned int i,j;
-
 	int value_ones=0;
-
 	int value_zeros=0;
-	
 	int percent_value=0;
-	
 	float value=0;
-	
 	unsigned long bits=1;
-	
 	unsigned long *key_compare;
-	
 	unsigned long and_const=LONG_MAX;
 	
-	/* our key compare percent */
-	key_compare=NMALLOC(cpmess[0].size_array,unsigned long);
+	
+	if((key_compare=NMALLOC(cpmess[0].size_array,unsigned long))==NULL){
+		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
+		exit(1);
+	}
 	
 	if(direction==LEFT){
 		composed_key[1]=key;
 	}
-	
 	else{
 		composed_key[3]=key;
 	}
 	
 	if(report->options->paranoid_leve>2){
-		/*
-		 * mold paranoid structure
-		 */
 		if((report->pardeb=MALLOC(paranoid))==NULL){
 			fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 			exit(1);
 		}
 	}
-	
-	
 	
 	for(i=0;i<(cpmess[0].size_array);i++){
 		if(direction==LEFT){
@@ -322,16 +312,19 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 			delta_tea(cpmess[i].plain_message,cpmess[i].cipher_message,composed_key);
 			key_compare[i]=composed_key[2];
 		}
-		if(report->options->paranoid_leve>2){
+		if(report->options->paranoid_leve>3){
 			report->pardeb->key=key;
 			report->pardeb->bit=i;
 			report->pardeb->block=direction;
 			report->pardeb->evalkey=key_compare[i];
-			(report->print_paranoid_all)(report->pardeb,stderr);
 		}
+		(report->print_paranoid_all)(report->pardeb,stderr);
 	}
+	/* our key compare percent */
 	percent_value=(int)((params->key_eval_percent)*cpmess[0].size_array);
-	
+	if(report->options->paranoid_leve>2){
+		report->pardeb->percent=percent_value;
+	}
 	for(i=0;i<TEA_DUAL_BLOCK;i++){
 		value_zeros=0;
 		value_ones=0;
@@ -347,6 +340,13 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 			}			
 		}
 		bits=bits<<1;
+		if(report->options->paranoid_leve>2){
+			report->pardeb->bit=j;
+			report->pardeb->zeros=value_zeros;
+			report->pardeb->ones=value_ones;
+			report->pardeb->element=i;
+		}
+		(report->print_paranoid_eval)(report->pardeb,stderr);
 		/*
 		 * if the amount of mirror bits it superior that the percent number of bits, then accept the mirror, otherwise
 		 * return with worst value.
@@ -357,15 +357,10 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 		else{
 			break;
 		}
-
 	}
-	if(report->options->paranoid_leve>0){
-		/*
-		 * mold paranoid structure
-		 */
+	if(report->options->paranoid_leve>2){
 		free((char *)report->pardeb);
 	}
-	
 	free((char *)key_compare);
 	return(value);
 }
@@ -373,60 +368,41 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report){
 	
 	
-	best_result *best_left;		/* best result container for left key block */
-	best_result *best_right;    /* best result container for right key block */
-	
-	
-	ts_params *params;          /* params for tabu search movement and other criteria */ 
-	
-	
-	tabu_list *list_left;		/* tabu list for left key block */
-	tabu_list *list_right;		/* tabu list for right key block */
-	
-	unsigned long key[4];   	/* a 128 bits key*/
-	unsigned long mistakes_left=0; 	/* how many mistakes are in the left serach */
-	unsigned long mistakes_right=0; /* how many mistakes are in the right serach */
-	
-	
-	
-	unsigned int control_left=0;   /* which is the current modified element in the left list */
-	unsigned int control_right=0;  /* which is the current modified element in the right list */
-	
-	unsigned int founded_left=FALSE;  /* if the left key has been founded */
-	unsigned int founded_right=FALSE; /* if the right key has been founded */
-	
-
-	unsigned int restart_left_control=0;  /* restart count for left key block */
-	unsigned int restart_right_control=0; /* restart counter for right key block */
-	
-	unsigned int change_left_count=0;     /* movement change counter for left key block */
-	unsigned int change_right_count=0;    /* movement change counter for right key block */
-	
-	unsigned int left_iter=0;
-	unsigned int right_iter=0;
-	
-	movement *move_left;		/* movement for left key block */
-	movement *move_right;		/* movement for right key block */
-	
-	time_t init_right_seconds;
+	best_result *best_left;					 /* best result container for left key block */
+	best_result *best_right;    			 /* best result container for right key block */
+	ts_params *params;          			 /* params for tabu search movement and other criteria */ 
+	tabu_list *list_left;					 /* tabu list for left key block */
+	tabu_list *list_right;					 /* tabu list for right key block */
+	unsigned long key[4];   				 /* a 128 bits key*/
+	unsigned long mistakes_left=0; 		 	 /* how many mistakes are in the left serach */
+	unsigned long mistakes_right=0; 		 /* how many mistakes are in the right serach */
+	unsigned int control_left=0;   			 /* which is the current modified element in the left list */
+	unsigned int control_right=0;    		 /* which is the current modified element in the right list */
+	unsigned int founded_left=FALSE; 		 /* if the left key has been founded */
+	unsigned int founded_right=FALSE;		 /* if the right key has been founded */
+	unsigned int restart_left_control=0;  	 /* restart count for left key block */
+	unsigned int restart_right_control=0;	 /* restart counter for right key block */
+	unsigned int restart_left_mv_control=0;  /* restart count for left key block */
+	unsigned int restart_right_mv_control=0; /* restart counter for right key block */
+	unsigned int change_left_count=0;    	 /* movement change counter for left key block */
+	unsigned int change_right_count=0;    	 /* movement change counter for right key block */
+	unsigned int left_iter=0;             	 /* left iteration number */
+	unsigned int right_iter=0;            	 /* right iteration number */
+	unsigned int i=0;						 /* just a counter */
+	movement *move_left;					 /* movement for left key block */
+	movement *move_right;					 /* movement for right key block */
+	final_report *report_final; 			 /* structure for final report generation */
+	time_t init_right_seconds;               
 	time_t end_right_seconds;
-	
 	time_t init_left_seconds;
 	time_t end_left_seconds;
-	
 	time_t init_global_seconds;
 	time_t end_global_seconds;
-	
-	clock_t global_clock;
-	clock_t right_clock;
-	clock_t left_clock;
-	
-	final_report *report_final;
-	
-	unsigned int i=0;
+	clock_t global_clock; 		 			 /* clock count for global tabu search */
+	clock_t right_clock; 					 /* clock count for right tabu search */
+	clock_t left_clock;   					 /* clock count for left tabu search */
 	
 	time(&init_global_seconds);
-
 	
 	if((move_left=MALLOC(movement))==NULL){
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
@@ -482,9 +458,6 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 	time(&init_right_seconds);
 	
 	if(report->options->paranoid_leve>0){
-		/*
-		 * mold paranoid structure
-		 */
 		if((report->par=MALLOC(paranoid))==NULL){
 			fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 			exit(1);
@@ -498,8 +471,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 			/*
 			 * Individual movement selection for left key block 
 			 */
-
-			if((restart_left_control%params->change_move_limit==0)&&(restart_left_control>params->change_move_limit)){
+			if(restart_left_mv_control>=params->change_move_limit){
 				key[1]=best_left->key[1];
 				restart_tabu(list_left,params);
 				if(change_left_count%2!=0){
@@ -509,7 +481,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 					move_left->move=(void *)&move_beta;
 				}
 				change_left_count++;
-				restart_left_control++;
+				restart_left_mv_control=0;
 			}
 			/* just move */
 			if(report->options->paranoid_leve>0){
@@ -534,6 +506,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 			}
 			if(mistakes_left>=params->tabu_max_decrease){
 				restart_left_control++;
+				restart_left_mv_control++;
 				restart_left(key);
 				if(evaluate(key[1],cpmess,LEFT,report,params)>=best_left->value){
 					best_left->key[0]=key[0];
@@ -550,7 +523,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 			/*
 			 *Individual movement selection for right key block
 			 */
-			if((restart_right_control%params->change_move_limit==0)&&(restart_right_control>params->change_move_limit)){
+			if(restart_right_mv_control>=params->change_move_limit){
 				key[3]=best_right->key[1];
 				restart_tabu(list_right,params);
 				if(change_right_count%2==0)
@@ -558,7 +531,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				else
 					move_right->move=(void *)&move_beta;
 				change_right_count++;
-				restart_right_control++;
+				restart_right_mv_control=0;
 			}
 			/* just move */
 			if(report->options->paranoid_leve>0){
@@ -582,6 +555,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 			}
 			if(mistakes_right>=params->tabu_max_decrease){
 				restart_right_control++;
+				restart_right_mv_control++;
 				restart_right(key);
 				if(evaluate(key[3],cpmess,RIGHT,report,params)>=best_right->value){
 					best_right->key[0]=key[2];
@@ -603,21 +577,22 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 	if(report->options->paranoid_leve>0){
 		free((char *)report->par);
 	}
+	
 	if(founded_left==FALSE){
 		time(&end_left_seconds);
 		left_clock=clock();
 		left_iter=i;
 	}
+
 	if(founded_right==FALSE){
 		time(&end_right_seconds);
 		right_clock=clock();
 		right_iter=i;
 	}
-	
+
 	time(&end_global_seconds);
 	global_clock=clock();
-	
-	
+		
 	gamma_tea(cpmess[0].plain_message,cpmess[0].cipher_message,best_left->key);
 	key[2]=best_right->key[0];
 	key[3]=best_right->key[1];
@@ -651,10 +626,16 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 	if(report->options->save_output)
 		(report->print_end)(report_final,report->report_file);
 		
-	
+	free_tabu(list_right->next,list_right->name);
+	free_tabu(list_left->next,list_left->name);
+	free((char *)list_right);
+	free((char *)list_left);
+	free((char *)best_right);
+	free((char *)best_left);
 	free((char *)params);
 	free((char *)move_left);
 	free((char *)move_right);
+	free((char *)report_final);
 }
 
 void generate_initial_solution(unsigned long *key,cipher_cont *cpmess){
@@ -710,6 +691,7 @@ void restart_right(unsigned long *key){
 		key[3]=key[3]>>1;
 	}
 }
+
 /* proper consume functions */
 
 ts_params *create_params(input_options *options){
@@ -760,15 +742,22 @@ tabu_list *create_tabu_list(ts_params *params){
 	tabu_list *tabu;
 	tabu_list *tabu_t;
 	
-	tabu=MALLOC(tabu_list);
+	if((tabu=MALLOC(tabu_list))==NULL){
+		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
+		exit(1);
+	}
 	tabu_t=tabu;
 	for(i=0;i<params->tabu_list_length;i++){
 		tabu_t->key=0x0;
 		tabu_t->bit_position=POST_LIMIT;
 		tabu_t->value=0;
 		tabu_t->name=i;
-		if(i<params->tabu_list_length-1)
-			tabu_t->next=MALLOC(tabu_list);
+		if(i<params->tabu_list_length-1){
+			if((tabu_t->next=MALLOC(tabu_list))==NULL){
+				fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
+				exit(1);
+			}
+		}
 		else{ tabu_t->next=tabu; break;}
 		tabu_t=tabu_t->next;
 	}

@@ -187,6 +187,82 @@ void print_bit(unsigned long nume){
 	printf("%s\n",num);
 }
 
+output_report *open_report(input_options *options){
+	
+	output_report *report;
+	
+	if((report=MALLOC(output_report))==NULL){
+		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
+		exit(1);
+	}
+	
+	if(options->save_output){
+		if(!(report->report_file=fopen(options->outfile,"w+"))){
+			fprintf(stderr,"ERROR: CANNOT CREATE REPORT OUTPUT FILE: %s\n",options->outfile);
+			exit(1);
+		}
+	}
+	else report->report_file=NULL;
+	
+	report->options=options;
+	
+	report->print_init=(void *)&print_init;
+	report->print_end=(void *)&print_end;
+	
+	if(options->middle_op)	
+		report->print_middle=(void *)&print_middle;
+	else	
+		report->print_middle=(void *)&void_print_middle;
+		
+	if(options->print_iter)
+		report->print_iteration=(void *)&print_iteration;
+	else
+		report->print_iteration=(void *)&void_print_iteration;
+	if(options->paranoid_leve==4){
+		report->print_paranoid=(void *)&print_paranoid;
+		report->print_paranoid_move=(void *)&print_paranoid_move;
+		report->print_paranoid_eval=(void *)&print_paranoid_eval;
+		report->print_paranoid_all=(void *)&print_paranoid_all;
+	}
+	if(options->paranoid_leve==3){
+		report->print_paranoid=(void *)&print_paranoid;
+		report->print_paranoid_move=(void *)&print_paranoid_move;
+		report->print_paranoid_eval=(void *)&print_paranoid_eval;
+		report->print_paranoid_all=(void *)&void_print_paranoid_all;
+	}
+	else{
+		if(options->paranoid_leve==2){
+			report->print_paranoid=(void *)&print_paranoid;
+			report->print_paranoid_move=(void *)&print_paranoid_move;
+			report->print_paranoid_eval=(void *)&void_print_paranoid_eval;
+			report->print_paranoid_all=(void *)&void_print_paranoid_all;
+		}
+		else{
+			if(options->paranoid_leve==1){
+				report->print_paranoid=(void *)&print_paranoid;
+				report->print_paranoid_move=(void *)&void_print_paranoid_move;
+				report->print_paranoid_eval=(void *)&void_print_paranoid_eval;
+				report->print_paranoid_all=(void *)&void_print_paranoid_all;
+			}
+			else{
+				if(options->paranoid_leve==0){
+					report->print_paranoid=(void *)&void_print_paranoid;
+					report->print_paranoid_move=(void *)&void_print_paranoid_move;
+					report->print_paranoid_eval=(void *)&void_print_paranoid_eval;
+					report->print_paranoid_all=(void *)&void_print_paranoid_all;
+				}
+			}
+		}
+	}
+	return(report);
+}
+
+void close_report(output_report *report){
+	if(report->options->save_output){
+		fclose(report->report_file);
+	}
+}
+
 void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"\n");
 	fprintf(file,"INPUT FILE:\t\t\t %s\n",options->inputfile);
@@ -218,8 +294,8 @@ void print_end(final_report *report,FILE *file){
 	fprintf(file,"BEST RIGHT RESULT TIME: %f\n",difftime(report->end_right,report->init_right));
 	//fprintf(file,"GLOBAL PG TIME: %f\n",report->clock_global);
 	fprintf(file,"GLOBAL TIME: %f\n",difftime(report->end_global,report->init_global));
-	fprintf(file,"LEFT KEY RESTART: %d\n",report->restart_left_control-report->change_left_count);
-	fprintf(file,"RIGHT KEY RESTART: %d\n",report->restart_right_control-report->change_right_count);
+	fprintf(file,"LEFT KEY RESTART: %d\n",report->restart_left_control);
+	fprintf(file,"RIGHT KEY RESTART: %d\n",report->restart_right_control);
 	fprintf(file,"LEFT MOVEMENT CHANGE: %d\n",report->change_left_count);
 	fprintf(file,"RIGHT MOVEMENT CHANGE: %d\n",report->change_right_count);
 	fprintf(file,"LEFT ITERATION: %d\n",report->left_iter);
@@ -252,6 +328,10 @@ void print_paranoid_move(paranoid *paranoid,FILE *file){
 	fprintf(file,"-->KEY:%08lX\tSCORE:%.02f\tBIT:%d\tBLOCK:%d\n",paranoid->key,paranoid->score,paranoid->bit,paranoid->block);
 }
 
+void print_paranoid_eval(paranoid *paranoid,FILE *file){
+	fprintf(file,"--->BIT:%d\tPERCENT:%d\tONES:%d\tZEROS:%d\tELEMET:%d\n",paranoid->bit,paranoid->percent,paranoid->ones,paranoid->zeros,paranoid->element);
+}
+
 void print_paranoid_all(paranoid *paranoid,FILE *file){
 	fprintf(file,"--->KEY:%08lX\tKEYNUM:%d\tBLOCK:%d\tEVALKEY:%08lX\n",paranoid->key,paranoid->bit,paranoid->block,paranoid->evalkey);
 }
@@ -264,6 +344,8 @@ void void_print_iteration(best_result *best,int block,int iter,FILE *fp){
 void void_print_paranoid(paranoid *paranoid,FILE *fp){
 }
 void void_print_paranoid_move(paranoid *paranoid,FILE *fp){
+}
+void void_print_paranoid_eval(paranoid *paranoid,FILE *fp){
 }
 void void_print_paranoid_all(paranoid *paranoid,FILE *fp){
 }
