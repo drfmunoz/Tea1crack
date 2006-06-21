@@ -31,7 +31,7 @@
 /*
  * limit for change the movement, the same limit would be used to return to movements
  */
-#define CHANGE_MOVE_LIMIT 4
+#define CHANGE_MOVE_LIMIT 1
 
 
 /*

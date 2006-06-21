@@ -62,6 +62,7 @@ cipher_cont* read_input(char* filename){
 void parse_test_arguments(int argc,char** argv,test_input_options* options){
 	
 }
+
 void parse_ts_arguments(int argc,char** argv,input_options* options){
 	
 	int i;
@@ -159,15 +160,17 @@ void print_ts_options(char *name){
 	fprintf(stdout,"\t\t 1: verbose middle movement final operations\n");
 	fprintf(stdout,"\t\t 2: verbose middle movement operations\n");
 	fprintf(stdout,"\t\t 3: verbose middle movement operations with evaluation step\n");
+	fprintf(stdout,"\t\t 4: verbose middle movement operations with evaluation step with keys\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"tabu search options: \n");
-	fprintf(stdout,"-tstl <integer>\t tabu list size (min 1 ,max 31)\n");
-	fprintf(stdout,"-tsiter <long>\t tabu search iteration number (min 1 ,max LONG_MAX)\n");
-	fprintf(stdout,"-tsdesc <long>\t tabu search maximun contiune decreace(min 1)\n");
-	fprintf(stdout,"-tsmch  <long>\t tabu search movement change limit\n");
-	fprintf(stdout,"-tskep   <long>\t tabu search key evaluation percent (1 - 100)\n");
+	fprintf(stdout,"-tstl <integer>\t tabu list size (min 1 ,max 31, DEFAULT 16)\n");
+	fprintf(stdout,"-tsiter <long>\t tabu search iteration number (min 1 ,max LONG_MAX, DEFAULT 2000)\n");
+	fprintf(stdout,"-tsdesc <long>\t tabu search maximun contiune decreace(min 1, DEFAULT 64)\n");
+	fprintf(stdout,"-tsmch  <long>\t tabu search movement change limit (DEFAULT 1)\n");
+	fprintf(stdout,"-tskep  <long>\t tabu search key evaluation percent (1 - 100, DEFAULT 90)\n");
 	fprintf(stdout,"\n");
-	fprintf(stdout,"example: %s -i input.data -o report.data -p -tstl 15 -tsiter 5000 -tsdesc 128 -tsmch 15 -tskl 90\n",name);
+	fprintf(stdout,"example: %s -i input.data -o report.data -tstl 15 -tsiter 5000 -tsdesc 128 -tsmch 15 -tskep 90\n",name);
+	fprintf(stdout,"example: %s -i input.data -o report.data -iter -mop -paranoid 4\n",name);
 	fprintf(stdout,"\n");
 }
 
