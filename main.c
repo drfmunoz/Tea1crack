@@ -23,14 +23,14 @@ int main(int argc,char** argv){
 	 * parse input parameters
 	 */
 	if(argc>1){
-		parse_arguments(argc,argv,options);
+		parse_ts_arguments(argc,argv,options);
 		if(options->have_input==FALSE){
 			fprintf(stderr,"ERROR: NO INPUT FILE");
 			return(1);
 		}
 	}
 	else{
-		print_options(argv[0]);
+		print_ts_options(argv[0]);
 		return(1);
 	}
 	

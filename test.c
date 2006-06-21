@@ -4,7 +4,7 @@
 #include "types.h"
 
 main(int argc,char **argv){
-	input_options *options;
+	test_input_options *options;
 	
 	cipher_cont *cipher=NULL;
 	
@@ -21,7 +21,7 @@ main(int argc,char **argv){
 	 * parse input parameters
 	 */
 	if(argc>1){
-		parse_arguments(argc,argv,options);
+		parse_test_arguments(argc,argv,options);
 		if(options->have_input==FALSE){
 			fprintf(stderr,"ERROR: NO INPUT FILE");
 			return(0);

@@ -23,25 +23,36 @@ void print_end(input_options *,best_result *);
  * reads data from input file and retur a pointer to an array
  */
 cipher_cont* read_input(char*);
-
 /*
  * parse standart input for options
  */
-void parse_arguments(int,char**,input_options *);
-
+void parse_ts_arguments(int,char**,input_options *);
+void parse_test_arguments(int argc,char** argv,test_input_options* options);
 /*
- * print usage options
+ * print tabu serach usage options function prototype
  */ 
-void print_options(char*);
-
-
+void print_ts_options(char*);
+/*
+ * print test usage options function prototype
+ */
+void print_test_options(char*);
+/*
+ * print bits function prototype
+ */
 void print_bit(unsigned long nume);
-
+/*
+ * print tabu search init function prototype
+ */
 void print_init(ts_params *,input_options *,FILE *);
-
+/*
+ * print tabu search result function prototype
+ */
 void print_end(final_report *,FILE *);
 
+
 void print_middle(unsigned long,float,unsigned int,int,int,FILE *);
+
+
 void void_print_middle(unsigned long,float,unsigned int,int,int,FILE *);
 
 void print_iteration(best_result *,int,int,FILE *);

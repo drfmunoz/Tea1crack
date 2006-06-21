@@ -85,6 +85,11 @@ struct input_opt{
 };
 typedef struct input_opt input_options;
 
+struct test_input_opt{
+	
+};
+typedef struct test_input_opt test_input_options;
+
 /*
  * printing report level structures
  */
