@@ -60,6 +60,7 @@ int main(int argc,char** argv){
 					key_eval_percent+=(float)(TS_PERCENT_INCREMENT/100.0);
 				}else{
 					tabu_list_length+=TS_LIST_INCREMENT;
+					key_eval_percent=(float)(TS_INIT_PERCENT/100.0);
 				}
 			}
 			else{

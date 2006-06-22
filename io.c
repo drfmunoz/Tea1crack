@@ -290,13 +290,19 @@ void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"\n");
 }
 void print_init_test_matrix(ts_params *params,input_options *options,FILE *file){
-	
+	fprintf(file,"%lld\t%lld\t%.02f\t",params->tabu_iterations,params->tabu_list_length,params->key_eval_percent);
 }
 void print_end_test_matrix(final_report *report,FILE *file){
-	
+	fprintf(file,"%08lX %08lX\t%.02f\t%08lX %08lX\t%.02f\t%d\t%d\t%.02f\t%.02f\t%0.2f\t%.02f\n"
+	,report->left->key[0],report->left->key[1],report->left->value
+	,report->right->key[0],report->right->key[1],report->right->value
+	,report->left_iter,report->right_iter
+	,report->clock_left,report->clock_right
+	,difftime(report->end_left,report->init_left),difftime(report->end_right,report->init_right)
+	);
 }
 void print_mold_test_matrix(FILE *file){
-	
+	fprintf(file,"TS ITER\tTS TL\tTS EP\t\t BR L\t\tBRL S\tBR R\t\t\tBRR S\tBRLITER\tBRRITER\tBRLPG\tBRRPG\tBRLT\tBRRT\n");
 }
 void print_end(final_report *report,FILE *file){
 	fprintf(file,"\n");

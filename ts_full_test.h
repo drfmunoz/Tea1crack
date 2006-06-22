@@ -5,7 +5,7 @@
 
 #define TS_ITER_INCREMENT 100
 
-#define TS_PERCENT_INCREMENT 10
+#define TS_PERCENT_INCREMENT 5
 
 #define TS_LIS_MAX 31
 
