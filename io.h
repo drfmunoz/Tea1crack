@@ -52,6 +52,10 @@ void print_init(ts_params *,input_options *,FILE *);
 void print_end(final_report *,FILE *);
 
 
+
+void print_init_test_matrix(ts_params *,input_options *options,FILE *);
+void print_end_test_matrix(final_report *,FILE *);
+
 /*
  * print middle tabu search operations function prototype
  */
@@ -94,7 +98,11 @@ output_report *open_report(input_options *options);
 /*
  * close a report function prototype
  */
-void close_report(output_report *report);
+void close_report(output_report *);
+
+void report_use_test_matrix(output_report *);
+
+void print_mold_test_matrix(FILE *);
 
 
 #endif

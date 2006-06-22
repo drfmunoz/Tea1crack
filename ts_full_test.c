@@ -5,7 +5,7 @@
 #include "tabu_search.h"
 #include "io.h"
 #include "types.h"
-
+#include "ts_full_test.h"
 
 
 int main(int argc,char** argv){
@@ -13,6 +13,11 @@ int main(int argc,char** argv){
 	input_options *options;
 	cipher_cont *cipher=NULL;
 	output_report *report;
+	int lock=TRUE;
+	unsigned long long tabu_list_length=TS_INIT_LIST;  /* tabu list lenght (DEFAULT 0) */
+	unsigned long long tabu_iterations=TS_INIT_ITER;	  /* tabu iterations (DEFAULT 0) */
+	unsigned long long tabu_max_decrease=128; /* tabu performance max decrease (DEFAULT 0) */
+	float key_eval_percent=(float)(TS_INIT_PERCENT/100.0);               /* percer for evaluation key */
 	
 	if((options=MALLOC(input_options))==NULL){
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
@@ -32,14 +37,43 @@ int main(int argc,char** argv){
 		print_ts_options(argv[0]);
 		return(1);
 	}
+		
 	/* create report*/
 	report=open_report(options);
+	report_use_test_matrix(report);
 	/* read input from file */
 	cipher=read_input(options->inputfile);
 	/* perform tabu search */
-	fprintf(stdout,"INIT TABU SEARCH\n");
-	tabusearch(cipher,options,report);
-	fprintf(stdout,"END TABU SEARCH\n");
+	printf("init test matrix\n");
+	print_mold_test_matrix(stdout);
+	if(options->save_output)
+		print_mold_test_matrix(report->report_file);
+	while(lock){
+		options->tabu_list_length=tabu_list_length;  /* tabu list lenght (DEFAULT 0) */
+		options->tabu_iterations=tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
+		options->tabu_max_decrease=tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
+		options->key_eval_percent=key_eval_percent;               /* percer for evaluation key */
+		tabusearch(cipher,options,report);
+		if(tabu_iterations<=TS_ITER_MAX){
+			if(tabu_list_length<=TS_LIS_MAX){
+				if(key_eval_percent<=1){
+					key_eval_percent+=(float)(TS_PERCENT_INCREMENT/100.0);
+				}else{
+					tabu_list_length+=TS_LIST_INCREMENT;
+				}
+			}
+			else{
+				tabu_list_length=TS_INIT_LIST;
+				tabu_max_decrease=128; 
+				key_eval_percent=(float)(TS_INIT_PERCENT/100.0);
+				tabu_iterations+=TS_ITER_INCREMENT;
+			}
+		}
+		else{
+			lock=FALSE;
+		}
+	}
+	printf("end test matrix\n");	
 	/* end program */
 	close_report(report);
 	free((char *)options);

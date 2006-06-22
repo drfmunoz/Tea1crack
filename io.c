@@ -266,6 +266,12 @@ void close_report(output_report *report){
 	}
 }
 
+void report_use_test_matrix(output_report *report){
+	report->print_init=(void *)&print_init_test_matrix;
+	report->print_end=(void *)&print_end_test_matrix;
+}
+
+
 void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"\n");
 	fprintf(file,"INPUT FILE:\t\t\t %s\n",options->inputfile);
@@ -283,7 +289,15 @@ void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"TABU KEY EVALUATION PERCENT:\t\t %f\n",params->key_eval_percent);
 	fprintf(file,"\n");
 }
-
+void print_init_test_matrix(ts_params *params,input_options *options,FILE *file){
+	
+}
+void print_end_test_matrix(final_report *report,FILE *file){
+	
+}
+void print_mold_test_matrix(FILE *file){
+	
+}
 void print_end(final_report *report,FILE *file){
 	fprintf(file,"\n");
 	fprintf(file,"FINAL REPORT\n");
