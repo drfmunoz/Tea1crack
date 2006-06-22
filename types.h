@@ -56,15 +56,41 @@ struct test_input_opt{
 	char inputfile[255];
 	char outfile[255];
 	int save_output;
+	int have_input;
+	unsigned long long k0;
+	unsigned long long k1;
+	unsigned long long k2;
+	unsigned long long k3;
 };
 typedef struct test_input_opt test_input_options;
-	
+
+
+struct full_test_input_opt{
+	char inputfile[255];
+	char outfile[255];
+	int save_output;
+	int have_input;
+	unsigned long long max_tabu_list_length;  /* tabu list lenght (DEFAULT 0) */
+	unsigned long long max_tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
+	unsigned long long max_tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
+	unsigned long long max_change_move_limit; /* tabu number of mistakes to change movement*/
+	unsigned long long init_tabu_list_length;  /* tabu list lenght (DEFAULT 0) */
+	unsigned long long init_tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
+	unsigned long long init_tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
+	unsigned long long init_change_move_limit; /* tabu number of mistakes to change movement*/
+	unsigned long long var_tabu_list_length;  /* tabu list lenght (DEFAULT 0) */
+	unsigned long long var_tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
+	unsigned long long var_tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
+	unsigned long long var_change_move_limit; /* tabu number of mistakes to change movement*/
+	float min_key_eval_percent;               /* percer for evaluation key */ 
+	float var_key_eval_percent;               /* percer for evaluation key */ 
+};
+typedef struct full_test_input_opt full_test_input_options;	
 /*
  *
  * TABU SEARCH SPECIFIC DATA STRUCTURES -------------------------------------------
  * 
  */
-
 
 /* 
  * tabu list data structure

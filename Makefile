@@ -10,7 +10,7 @@ GENERATE  = generate.o tea.o io.o
 EXE5	  = ts_full_test
 FULLTEST  = ts_full_test.o tea.o io.o tabu_search.o
 
-all : main test gen comp
+all : main test gen fulltest
 main : $(OBJS)
 		$(CC) $(LDFLAGS) $(OBJS) -o $(EXE1)
 test : $(TEST)

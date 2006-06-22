@@ -19,8 +19,8 @@ cipher_cont* read_input(char*);
  * parse standart input for options
  */
 void parse_ts_arguments(int,char**,input_options *);
-void parse_test_arguments(int argc,char** argv,test_input_options* options);
-
+void parse_test_arguments(int,char**,test_input_options* );
+void parse_full_test_arguments(int,char**,full_test_input_options* );
 
 /*
  * print tabu serach usage options function prototype
@@ -32,7 +32,7 @@ void print_ts_options(char*);
  * print test usage options function prototype
  */
 void print_test_options(char*);
-
+void print_full_test_options(char *);
 
 /*
  * print bits function prototype
@@ -103,6 +103,10 @@ void close_report(output_report *);
 void report_use_test_matrix(output_report *);
 
 void print_mold_test_matrix(FILE *);
+
+input_options* convert_full_test_opt_to_gen(full_test_input_options*);
+
+input_options* convert_test_opt_to_gen(test_input_options*);
 
 
 #endif

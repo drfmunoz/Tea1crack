@@ -11,15 +11,17 @@
 int main(int argc,char** argv){
 	
 	input_options *options;
+	full_test_input_options *test_options;
+	
 	cipher_cont *cipher=NULL;
 	output_report *report;
 	int lock=TRUE;
-	unsigned long long tabu_list_length=TS_INIT_LIST;  /* tabu list lenght (DEFAULT 0) */
-	unsigned long long tabu_iterations=TS_INIT_ITER;	  /* tabu iterations (DEFAULT 0) */
-	unsigned long long tabu_max_decrease=128; /* tabu performance max decrease (DEFAULT 0) */
-	float key_eval_percent=(float)(TS_INIT_PERCENT/100.0);               /* percer for evaluation key */
+	unsigned long long tabu_list_length=TS_INIT_LIST;
+	unsigned long long tabu_iterations=TS_INIT_ITER;	
+	unsigned long long tabu_max_decrease=128; 
+	float key_eval_percent=(float)(TS_INIT_PERCENT/100.0);           
 	
-	if((options=MALLOC(input_options))==NULL){
+	if((test_options=MALLOC(full_test_input_options))==NULL){
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 		exit(1);
 	}
@@ -27,25 +29,85 @@ int main(int argc,char** argv){
 	 * parse input parameters
 	 */
 	if(argc>1){
-		parse_ts_arguments(argc,argv,options);
-		if(options->have_input==FALSE){
+		parse_full_test_arguments(argc,argv,test_options);
+		if(test_options->have_input==FALSE){
 			fprintf(stderr,"ERROR: NO INPUT FILE");
 			return(1);
 		}
 	}
 	else{
-		print_ts_options(argv[0]);
+		print_full_test_options(argv[0]);
 		return(1);
 	}
 		
+	options=convert_full_test_opt_to_gen(test_options);
+	
+	if(test_options->max_tabu_list_length==0){
+		
+	} 
+	if(test_options->max_tabu_iterations==0){
+		
+	}
+
+	if(test_options->max_tabu_max_decrease==0){
+		
+	}
+	if(test_options->max_change_move_limit==0){
+		
+	}
+
+	if(test_options->init_tabu_list_length==0){
+		
+	}
+
+	if(test_options->init_tabu_iterations==0){
+		
+	}
+
+	if(test_options->init_tabu_max_decrease==0){
+		
+	}
+ 
+	if(test_options->init_change_move_limit==0){
+		
+	}
+
+	if(test_options->var_tabu_list_length==0){
+		
+	}
+
+	if(test_options->var_tabu_iterations==0){
+		
+	}
+  
+	if(test_options->var_tabu_max_decrease==0){
+		
+	}
+
+	if(test_options->var_change_move_limit==0){
+		
+	}
+
+	if(test_options->min_key_eval_percent==0){
+		
+	}
+           
+	if(test_options->var_key_eval_percent==0){
+		
+	}
+	
+	
 	/* create report*/
 	report=open_report(options);
 	report_use_test_matrix(report);
 	/* read input from file */
+	
 	cipher=read_input(options->inputfile);
 	/* perform tabu search */
+	
 	printf("init test matrix\n");
 	print_mold_test_matrix(stdout);
+	
 	if(options->save_output)
 		print_mold_test_matrix(report->report_file);
 	while(lock){

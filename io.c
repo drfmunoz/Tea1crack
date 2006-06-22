@@ -58,7 +58,155 @@ cipher_cont* read_input(char* filename){
 	fclose(infile);
 	return t_cipher;
 }
+input_options* convert_full_test_opt_to_gen(full_test_input_options* options){
+	input_options *t_options;
+	if((t_options=MALLOC(input_options))==NULL){
+		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
+		exit(1);
+	}
+	
+	return(t_options);
+}
+input_options* convert_test_opt_to_gen(test_input_options* options){
+	input_options *t_options;
+	if((t_options=MALLOC(input_options))==NULL){
+		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
+		exit(1);
+	}
+	
+	return(t_options);	
+}
+void parse_full_test_arguments(int argc,char** argv,full_test_input_options* options){
 
+	int i;
+	unsigned long tmp;
+	options->save_output=FALSE;
+	options->have_input=FALSE;
+	options->max_tabu_list_length=0;  
+	options->max_tabu_iterations=0;	
+	options->max_tabu_max_decrease=0;
+	options->max_change_move_limit=0; 
+	options->init_tabu_list_length=0; 
+	options->init_tabu_iterations=0;	
+	options->init_tabu_max_decrease=0; 
+	options->init_change_move_limit=0;
+	options->var_tabu_list_length=0; 
+	options->var_tabu_iterations=0;	  
+	options->var_tabu_max_decrease=0; 
+	options->var_change_move_limit=0; 
+	options->min_key_eval_percent=0;             
+	options->var_key_eval_percent=0;
+	
+	for(i=0;i<argc;i++){
+		if(strcmp(argv[i],"-i")==0){
+			options->have_input=TRUE;
+			if(i+1<argc){	
+				strcpy(options->inputfile,argv[i+1]);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-o")==0){
+			options->save_output=TRUE;
+			
+			if(i+1<argc){
+				strcpy(options->outfile,argv[i+1]);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"--help")==0){
+			print_full_test_options(argv[0]);
+			exit(0);
+		}
+		if(strcmp(argv[i],"-maxtstl")==0){
+			if(i+1<argc){
+				options->max_tabu_list_length=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-maxtsiter")==0){
+			if(i+1<argc){
+				options->max_tabu_iterations=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-maxtsmdec")==0){
+			if(i+1<argc){
+				options->max_tabu_max_decrease=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-maxtschm")==0){
+			if(i+1<argc){
+				options->max_change_move_limit=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-itstl")==0){
+			if(i+1<argc){
+				options->init_tabu_list_length=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-itsiter")==0){
+			if(i+1<argc){
+				options->init_tabu_iterations=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-itsmdec")==0){
+			if(i+1<argc){
+				options->init_tabu_max_decrease=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-itschm")==0){
+			if(i+1<argc){
+				options->init_change_move_limit=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-vartstl")==0){
+			if(i+1<argc){
+				options->var_tabu_list_length=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-vartsiter")==0){
+			if(i+1<argc){
+				options->var_tabu_iterations=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-vartsmdec")==0){
+			if(i+1<argc){
+				options->var_tabu_max_decrease=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-vartschm")==0){
+			if(i+1<argc){
+				options->var_change_move_limit=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-mintskep")==0){
+			if(i+1<argc){
+				tmp=strtoull(argv[i+1],NULL,0);
+				options->min_key_eval_percent=tmp;
+				options->min_key_eval_percent=options->min_key_eval_percent/100;
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-vartskep")==0){
+			if(i+1<argc){
+				tmp=strtoull(argv[i+1],NULL,0);
+				options->var_key_eval_percent=tmp;
+				options->var_key_eval_percent=options->var_key_eval_percent/100;
+				i++;
+			}
+		}
+	}             
+}
 void parse_test_arguments(int argc,char** argv,test_input_options* options){
 	
 }
@@ -147,7 +295,30 @@ void parse_ts_arguments(int argc,char** argv,input_options* options){
 		}	
 	}
 }
-
+void print_full_test_options(char *name){
+	fprintf(stdout,"Usage: %s -i <input_file> [options]\n",name);
+	fprintf(stdout,"\n");
+	fprintf(stdout,"options: \n");
+	fprintf(stdout,"-o\t\t<out_file>\t generate output report to a file (RECOMENDED)\n");
+	fprintf(stdout,"-maxtstl\t<long>\t\t max tabu search list length\n");
+	fprintf(stdout,"-maxtsiter\t<long> \t\t max tabu search iteration\n");
+	fprintf(stdout,"-maxtsmdec\t<long>\t\t max tabu search performance decreace\n");
+	fprintf(stdout,"-maxtschm\t<long>\t\t max tabu searh mistakes for change movement\n");
+	fprintf(stdout,"-itstl\t\t<long>\t\t initial tabu search list length\n");
+	fprintf(stdout,"-itsiter\t<long>\t\t initial tabu search iteration\n");
+	fprintf(stdout,"-itsmdec\t<long>\t\t initial tabu search performance decreace\n");
+	fprintf(stdout,"-itschm\t\t<long>\t\t initial tabu searh mistakes for change movement\n");
+	fprintf(stdout,"-vartstl\t<long>\t\t variation of tabu search list length\n");
+	fprintf(stdout,"-vartsiter\t<long> \t\t variation of tabu search iteration\n");
+	fprintf(stdout,"-vartsmdec\t<long>\t\t variation of tabu search performance decreace\n");
+	fprintf(stdout,"-vartschm\t<long>\t\t variation of tabu searh mistakes for change movement\n");
+	fprintf(stdout,"-mintskep\t<long>\t\t minimal key evaluation percent\n");
+	fprintf(stdout,"-vartskep\t<long>\t\t variation of key evaluation percent\n");	
+	fprintf(stdout,"\n");
+	fprintf(stdout,"example: %s -i input.data -o report.data\n",name);
+	fprintf(stdout,"example: %s -i input.data -o report.data -maxtstl 32 -maxtsiter 5000 -maxtsmdec 64 -maxtschm 4 -itstl 1 -itsiter 200 -itsmdec 10 -itschm 1 -vartstl 2 -vartsiter 100 -vartsmdec 4 -vartschm 1 -mintskep 1 -vartskep 5\n",name);
+	fprintf(stdout,"\n");
+}
 void print_ts_options(char *name){
 	fprintf(stdout,"Usage: %s -i <input_file> [options] [tabu_search_opts]\n",name);
 	fprintf(stdout,"\n");
@@ -167,7 +338,7 @@ void print_ts_options(char *name){
 	fprintf(stdout,"-tsiter <long>\t tabu search iteration number (min 1 ,max LONG_MAX, DEFAULT 2000)\n");
 	fprintf(stdout,"-tsdesc <long>\t tabu search maximun contiune decreace(min 1, DEFAULT 64)\n");
 	fprintf(stdout,"-tsmch  <long>\t tabu search movement change limit (DEFAULT 1)\n");
-	fprintf(stdout,"-tskep  <long>\t tabu search key evaluation percent (1 - 100, DEFAULT 90)\n");
+	fprintf(stdout,"-tskep  <long>\t tabu search key evaluation percent (1 - 100, DEFAULT 99)\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"example: %s -i input.data -o report.data -tstl 15 -tsiter 5000 -tsdesc 128 -tsmch 15 -tskep 90\n",name);
 	fprintf(stdout,"example: %s -i input.data -o report.data -iter -mop -paranoid 4\n",name);
@@ -259,19 +430,15 @@ output_report *open_report(input_options *options){
 	}
 	return(report);
 }
-
 void close_report(output_report *report){
 	if(report->options->save_output){
 		fclose(report->report_file);
 	}
 }
-
 void report_use_test_matrix(output_report *report){
 	report->print_init=(void *)&print_init_test_matrix;
 	report->print_end=(void *)&print_end_test_matrix;
 }
-
-
 void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"\n");
 	fprintf(file,"INPUT FILE:\t\t\t %s\n",options->inputfile);
