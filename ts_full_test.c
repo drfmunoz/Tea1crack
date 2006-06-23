@@ -16,10 +16,12 @@ int main(int argc,char** argv){
 	cipher_cont *cipher=NULL;
 	output_report *report;
 	int lock=TRUE;
-	unsigned long long tabu_list_length=TS_INIT_LIST;
-	unsigned long long tabu_iterations=TS_INIT_ITER;	
-	unsigned long long tabu_max_decrease=128; 
-	float key_eval_percent=(float)(TS_INIT_PERCENT/100.0);           
+	
+	unsigned long long tabu_list_length=0;
+	unsigned long long tabu_iterations=0;	
+	unsigned long long tabu_max_decrease=0; 
+	unsigned long long change_move_limit=0; 
+	float key_eval_percent=0;           
 	
 	if((test_options=MALLOC(full_test_input_options))==NULL){
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
@@ -40,62 +42,62 @@ int main(int argc,char** argv){
 		return(1);
 	}
 		
-	options=convert_full_test_opt_to_gen(test_options);
+	
 	
 	if(test_options->max_tabu_list_length==0){
-		
+		test_options->max_tabu_list_length=TS_LIS_MAX;
 	} 
 	if(test_options->max_tabu_iterations==0){
-		
+		test_options->max_tabu_iterations=TS_ITER_MAX;
 	}
 
 	if(test_options->max_tabu_max_decrease==0){
-		
+		test_options->max_tabu_max_decrease=TS_MAX_DEC_MAX;
 	}
 	if(test_options->max_change_move_limit==0){
-		
+		test_options->max_change_move_limit=TS_CHM_MAX;
 	}
-
 	if(test_options->init_tabu_list_length==0){
-		
+		test_options->init_tabu_list_length=TS_INIT_LIST;
 	}
 
 	if(test_options->init_tabu_iterations==0){
-		
+		test_options->init_tabu_iterations=TS_INIT_ITER;
 	}
 
 	if(test_options->init_tabu_max_decrease==0){
-		
+		test_options->init_tabu_max_decrease=TS_INIT_MAX_DEC;
 	}
  
 	if(test_options->init_change_move_limit==0){
-		
+		test_options->init_change_move_limit=TS_INIT_CHM;
 	}
 
 	if(test_options->var_tabu_list_length==0){
-		
+		test_options->var_tabu_list_length=TS_LIST_INCREMENT;
 	}
 
 	if(test_options->var_tabu_iterations==0){
-		
+		test_options->var_tabu_iterations=TS_ITER_INCREMENT;
 	}
   
 	if(test_options->var_tabu_max_decrease==0){
-		
+		test_options->var_tabu_max_decrease=TS_MAX_DEC_INCREMENT;
 	}
 
 	if(test_options->var_change_move_limit==0){
-		
+		test_options->var_change_move_limit=TS_CHM_INCREMENT;
 	}
 
 	if(test_options->min_key_eval_percent==0){
-		
+		test_options->min_key_eval_percent=(float)(TS_INIT_PERCENT/100);
 	}
            
 	if(test_options->var_key_eval_percent==0){
-		
+		test_options->var_key_eval_percent=(float)(TS_PERCENT_INCREMENT/100);
 	}
 	
+	options=convert_full_test_opt_to_gen(test_options);
 	
 	/* create report*/
 	report=open_report(options);
@@ -115,21 +117,38 @@ int main(int argc,char** argv){
 		options->tabu_iterations=tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
 		options->tabu_max_decrease=tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
 		options->key_eval_percent=key_eval_percent;               /* percer for evaluation key */
+		options->change_move_limit=change_move_limit;
 		tabusearch(cipher,options,report);
-		if(tabu_iterations<=TS_ITER_MAX){
-			if(tabu_list_length<=TS_LIS_MAX){
+		if(tabu_iterations<=test_options->max_tabu_iterations){
+			if(tabu_list_length<=test_options->max_tabu_list_length){
 				if(key_eval_percent<=1){
-					key_eval_percent+=(float)(TS_PERCENT_INCREMENT/100.0);
+					if(tabu_max_decrease<test_options->max_tabu_max_decrease){
+						if(change_move_limit<test_options->max_change_move_limit){
+							change_move_limit+=test_options->var_change_move_limit;
+						}
+						else{
+							change_move_limit=test_options->init_change_move_limit;
+							tabu_max_decrease+=test_options->var_tabu_max_decrease;
+						}
+					}
+					else{
+						tabu_max_decrease=test_options->init_tabu_max_decrease;
+						change_move_limit=test_options->init_change_move_limit;
+						key_eval_percent+=test_options->var_key_eval_percent;
+					}
 				}else{
-					tabu_list_length+=TS_LIST_INCREMENT;
-					key_eval_percent=(float)(TS_INIT_PERCENT/100.0);
+					tabu_list_length+=test_options->var_tabu_list_length;
+					key_eval_percent=test_options->min_key_eval_percent;
+					tabu_max_decrease=test_options->init_tabu_max_decrease;
+					change_move_limit=test_options->init_change_move_limit;							
 				}
 			}
 			else{
-				tabu_list_length=TS_INIT_LIST;
-				tabu_max_decrease=128; 
-				key_eval_percent=(float)(TS_INIT_PERCENT/100.0);
-				tabu_iterations+=TS_ITER_INCREMENT;
+				tabu_iterations+=test_options->var_tabu_iterations;
+				tabu_list_length=test_options->init_tabu_list_length;
+				tabu_max_decrease=test_options->init_tabu_max_decrease;
+				key_eval_percent=test_options->min_key_eval_percent;       
+				change_move_limit=test_options->init_change_move_limit;
 			}
 		}
 		else{
@@ -140,6 +159,7 @@ int main(int argc,char** argv){
 	/* end program */
 	close_report(report);
 	free((char *)options);
+	free((char *)test_options);
 	free((char *)report);
 	free((char *)cipher);
 	return(0);

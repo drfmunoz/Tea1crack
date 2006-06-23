@@ -64,7 +64,17 @@ input_options* convert_full_test_opt_to_gen(full_test_input_options* options){
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 		exit(1);
 	}
-	
+	t_options->have_input=options->have_input;
+	t_options->generate_report=TRUE;
+	t_options->save_output=options->save_output;
+	t_options->tabu_list_length=options->init_tabu_list_length;
+	t_options->tabu_iterations=options->init_tabu_iterations;
+	t_options->tabu_max_decrease=options->init_tabu_max_decrease;
+	t_options->change_move_limit=options->init_change_move_limit;
+	t_options->key_eval_percent=options->min_key_eval_percent;
+	t_options->paranoid_leve=0;
+	t_options->middle_op=FALSE;
+	t_options->print_iter=FALSE;
 	return(t_options);
 }
 input_options* convert_test_opt_to_gen(test_input_options* options){
@@ -73,7 +83,7 @@ input_options* convert_test_opt_to_gen(test_input_options* options){
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 		exit(1);
 	}
-	
+
 	return(t_options);	
 }
 void parse_full_test_arguments(int argc,char** argv,full_test_input_options* options){
