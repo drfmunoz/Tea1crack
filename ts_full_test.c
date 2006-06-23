@@ -104,7 +104,7 @@ int main(int argc,char** argv){
 	report_use_test_matrix(report);
 	/* read input from file */
 	
-	cipher=read_input(options->inputfile);
+	cipher=read_input(test_options->inputfile);
 	/* perform tabu search */
 	
 	printf("init test matrix\n");
