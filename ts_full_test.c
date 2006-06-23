@@ -90,11 +90,13 @@ int main(int argc,char** argv){
 	}
 
 	if(test_options->min_key_eval_percent==0){
-		test_options->min_key_eval_percent=(float)(TS_INIT_PERCENT/100);
+		test_options->min_key_eval_percent=(float)(TS_INIT_PERCENT);
+		test_options->min_key_eval_percent=test_options->min_key_eval_percent/100;
 	}
            
 	if(test_options->var_key_eval_percent==0){
-		test_options->var_key_eval_percent=(float)(TS_PERCENT_INCREMENT/100);
+		test_options->var_key_eval_percent=(float)(TS_PERCENT_INCREMENT);
+		test_options->var_key_eval_percent=test_options->var_key_eval_percent/100;
 	}
 	
 	options=convert_full_test_opt_to_gen(test_options);
@@ -106,6 +108,12 @@ int main(int argc,char** argv){
 	
 	cipher=read_input(test_options->inputfile);
 	/* perform tabu search */
+	tabu_iterations=test_options->min_key_eval_percent;
+	tabu_list_length=test_options->init_tabu_list_length;
+	tabu_max_decrease=test_options->init_tabu_max_decrease;
+	key_eval_percent=test_options->min_key_eval_percent;       
+	change_move_limit=test_options->init_change_move_limit;
+
 	
 	printf("init test matrix\n");
 	print_mold_test_matrix(stdout);
