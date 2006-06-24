@@ -72,6 +72,7 @@ input_options* convert_full_test_opt_to_gen(full_test_input_options* options){
 	t_options->tabu_max_decrease=options->init_tabu_max_decrease;
 	t_options->change_move_limit=options->init_change_move_limit;
 	t_options->key_eval_percent=options->min_key_eval_percent;
+	strcpy(t_options->outfile,options->outfile);
 	t_options->paranoid_leve=0;
 	t_options->middle_op=FALSE;
 	t_options->print_iter=FALSE;

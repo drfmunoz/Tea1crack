@@ -64,8 +64,8 @@ void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsig
 				keys[i]=0x0;
 				keys[i]=key[3]^bits;
 			}
-			scores[i]=evaluate(keys[i],cpmess,block,report,params);
 
+			scores[i]=evaluate(keys[i],cpmess,block,report,params);
 		}
 		if(report->options->paranoid_leve>1){
 			report->par->key=keys[i];
@@ -103,7 +103,7 @@ void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsig
 		}
 		else list=list->next;
 	}
-	/* check if this movement is better that the current best */
+	/* check if this movement is better that the current best */	
 	if(score > best->value){
 		best->value=score;
 		best->key[0]=0x0;
@@ -389,6 +389,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 	unsigned int left_iter=0;             	 /* left iteration number */
 	unsigned int right_iter=0;            	 /* right iteration number */
 	unsigned int i=0;						 /* just a counter */
+	unsigned long bit=1;
 	movement *move_left;					 /* movement for left key block */
 	movement *move_right;					 /* movement for right key block */
 	final_report *report_final; 			 /* structure for final report generation */
@@ -503,6 +504,15 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				left_clock=clock();
 				left_iter=i+1;
 				founded_left=TRUE;
+				bit=1;
+				bit=bit<<31;
+				if(best_left->key[1]&bit){
+					best_left->key[1]=best_left->key[1]^bit;
+				}
+				bit=bit<<1;
+				if(best_left->key[1]&bit){
+					best_left->key[1]=best_left->key[1]^bit;
+				}
 			}
 			if(mistakes_left>=params->tabu_max_decrease){
 				restart_left_control++;
@@ -552,6 +562,15 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				right_clock=clock();
 				right_iter=i+1;
 				founded_right=TRUE;
+				bit=1;
+				bit=bit<<31;
+				if(best_right->key[1]&bit){
+					best_right->key[1]=best_right->key[1]^bit;
+				}
+				bit=bit<<1;
+				if(best_right->key[1]&bit){
+					best_right->key[1]=best_right->key[1]^bit;
+				}
 			}
 			if(mistakes_right>=params->tabu_max_decrease){
 				restart_right_control++;
