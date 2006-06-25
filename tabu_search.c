@@ -8,7 +8,18 @@
 #include "io.h"
 #include "types.h"
 
-
+/*! Tabus Search movement alpha: change the ith bit of one 32 bit key block.
+ * \param key
+ * \param list
+ * \param mistakes
+ * \param control
+ * \param founded
+ * \param best
+ * \param params
+ * \param report
+ * \param cpmess
+ * \param block
+ */
 void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *founded,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block){
 	/*
 		first movement:

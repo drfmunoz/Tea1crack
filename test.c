@@ -1,16 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "tea.h"
 #include "io.h"
 #include "types.h"
 
-main(int argc,char **argv){
+int main(int argc,char **argv){
 	test_input_options *options;
 	
 	cipher_cont *cipher=NULL;
 	
-	options=MALLOC(input_options);
+	options=MALLOC(test_input_options);
 	
-	unsigned long key[4]={0x1C408439,0x0152804D,0xA01D71EF,0xBC24EFF1};
+	unsigned long key[4]={0x0,0x0,0x0,0x0};
 									
 	unsigned long messcipher[2]={0x0,0x0};
 	unsigned long decipher[2]={0x0,0x0};
@@ -28,12 +29,18 @@ main(int argc,char **argv){
 		}
 	}
 	else{
-		print_options(argv[0]);
+		print_test_options(argv[0]);
 		return(0);
 	}
 	
 	cipher=read_input(options->inputfile);
 	
+	key[0]=options->key1;
+	key[1]=options->key2;
+	key[2]=options->key3;
+	key[3]=options->key4;
+		
+		
 	for(i=0;i < (cipher[0].size_array)-1;i++){
 		messcipher[1]=0x0;
 		messcipher[0]=0x0;
@@ -46,12 +53,5 @@ main(int argc,char **argv){
 		printf("DPLAIN-CIPHER %08lX %08lX\t",decipher[0],decipher[1]);
 		printf("%08lX %08lX\n",cipher[i].cipher_message[0],cipher[i].cipher_message[1]);
 	}
-	
-	
-	
-//	printf("%08X %08X %08X %08X\n",key[0],key[1],key[2],key[3]);
-//	printf("%08X %08X\n",mess[0],mess[1]);
-//	printf("%08X %08X\n",ciph[0],ciph[1]);
-
 	return(1);
 }

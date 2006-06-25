@@ -219,7 +219,44 @@ void parse_full_test_arguments(int argc,char** argv,full_test_input_options* opt
 	}             
 }
 void parse_test_arguments(int argc,char** argv,test_input_options* options){
+	int i;
+	options->save_output=FALSE;
+	options->have_input=FALSE;
+	options->key1=0x0;
+	options->key2=0x0;
+	options->key3=0x0;
+	options->key4=0x0;
+	for(i=0;i<argc;i++){
+		if(strcmp(argv[i],"-i")==0){
+			options->have_input=TRUE;
+			if(i+1<argc){	
+				strcpy(options->inputfile,argv[i+1]);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-o")==0){
+			options->save_output=TRUE;
+			
+			if(i+1<argc){
+				strcpy(options->outfile,argv[i+1]);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"--help")==0){
+			print_test_options(argv[0]);
+			exit(0);
+		}
+		if(strcmp(argv[i],"-key")==0){
 	
+			if(i+4<argc){
+				options->key1=strtoull(argv[i+1],NULL,16);
+				options->key2=strtoull(argv[i+2],NULL,16);
+				options->key3=strtoull(argv[i+3],NULL,16);
+				options->key4=strtoull(argv[i+4],NULL,16);
+				i++;
+			}
+		}
+	}
 }
 
 void parse_ts_arguments(int argc,char** argv,input_options* options){
@@ -355,6 +392,15 @@ void print_ts_options(char *name){
 	fprintf(stdout,"example: %s -i input.data -o report.data -iter -mop -paranoid 4\n",name);
 	fprintf(stdout,"\n");
 }
+void print_test_options(char *name){
+	fprintf(stdout,"Usage: %s -i <input_file> [options] -key hexa_key\n",name);
+	fprintf(stdout,"\n");
+	fprintf(stdout,"options: \n");
+	fprintf(stdout,"-o <out_file>\t generate output report to a file \n");
+	fprintf(stdout,"\n");
+	fprintf(stdout,"example: %s -i input.data -o report.data -key 0x4A99E951 0x3EA4EB1A 0x3D471817 0x067EAD6F\n",name);
+	fprintf(stdout,"\n");	
+}
 
 void print_bit(unsigned long nume){
 	int i;
@@ -475,7 +521,7 @@ void print_end_test_matrix(final_report *report,FILE *file){
 	,report->left->key[0],report->left->key[1],report->left->value
 	,report->right->key[0],report->right->key[1],report->right->value
 	,report->left_iter,report->right_iter
-	,report->clock_left,report->clock_right
+	,(float)(report->clock_left/CLOCKS_PER_SEC),(float)(report->clock_right/CLOCKS_PER_SEC)
 	,difftime(report->end_left,report->init_left),difftime(report->end_right,report->init_right)
 	);
 }
