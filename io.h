@@ -6,7 +6,7 @@
  * maximun number of lines that can have input file
  */
 
-#define MAX_FILE_LINES 1010
+#define MAX_FILE_LINES 6000
 
 
 /*
@@ -21,6 +21,7 @@ cipher_cont* read_input(char*);
 void parse_ts_arguments(int,char**,input_options *);
 void parse_test_arguments(int,char**,test_input_options* );
 void parse_full_test_arguments(int,char**,full_test_input_options* );
+void parse_generate_arguments(int,char**,generate_options *);
 
 /*
  * print tabu serach usage options function prototype
@@ -33,6 +34,7 @@ void print_ts_options(char*);
  */
 void print_test_options(char*);
 void print_full_test_options(char *);
+void print_generate_options(char *);
 
 /*
  * print bits function prototype

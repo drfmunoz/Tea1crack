@@ -122,6 +122,25 @@ struct full_test_input_opt{
  */
 typedef struct full_test_input_opt full_test_input_options;	
 
+/**
+ * \struct generate_options
+ * \brief generate plain-cipher input options
+ * Container for options in generation of random plain-cipher 
+ */
+struct generate_options{
+	char outfile[255];				/**< output filename */
+	int userandom;					/**< if the key is random generated */
+	int usefile;					/**< if outfile would be used, if not use STDOUT */
+	int usekey;						/**< if key would be given */
+	unsigned long seed;				/**< seed for random */
+	unsigned long amount;			/**< amount of plain-cipher messages */
+	unsigned long key[4];			/**< if no randomd key, the key needs to be given */
+};
+/**
+ * \typedef generate_options
+ * \brief alias for generate_options
+ */
+typedef struct generate_options generate_options;
 
 /**
  * \struct tabu_list

@@ -104,8 +104,8 @@ int main(int argc,char** argv){
 	/* create report*/
 	report=open_report(options);
 	report_use_test_matrix(report);
-	/* read input from file */
-	
+	/* read input from file */	
+
 	cipher=read_input(test_options->inputfile);
 	/* perform tabu search */
 	tabu_iterations=test_options->min_key_eval_percent;
@@ -127,7 +127,7 @@ int main(int argc,char** argv){
 		options->key_eval_percent=key_eval_percent;               /* percer for evaluation key */
 		options->change_move_limit=change_move_limit;
 		tabusearch(cipher,options,report);
-		if(tabu_iterations<=test_options->max_tabu_iterations){
+		if(tabu_iterations<=test_options->max_tabu_iterations+1){
 			if(tabu_list_length<=test_options->max_tabu_list_length){
 				if(key_eval_percent<=1){
 					if(tabu_max_decrease<test_options->max_tabu_max_decrease){

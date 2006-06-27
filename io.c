@@ -216,7 +216,7 @@ void parse_full_test_arguments(int argc,char** argv,full_test_input_options* opt
 				i++;
 			}
 		}
-	}             
+	}            
 }
 void parse_test_arguments(int argc,char** argv,test_input_options* options){
 	int i;
@@ -257,6 +257,52 @@ void parse_test_arguments(int argc,char** argv,test_input_options* options){
 			}
 		}
 	}
+}
+
+void parse_generate_arguments(int argc,char** argv,generate_options *options){
+	int i;
+	options->userandom=TRUE;				
+	options->usefile=FALSE;		
+	options->usekey=FALSE;			
+	options->seed=0;			
+	options->amount=0;			
+	for(i=0;i<argc;i++){
+		if(strcmp(argv[i],"-o")==0){
+			options->usefile=TRUE;
+			if(i+1<argc){	
+				strcpy(options->outfile,argv[i+1]);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"--help")==0){
+			print_generate_options(argv[0]);
+			exit(0);
+		}
+		if(strcmp(argv[i],"-key")==0){
+			options->usekey=TRUE;
+			options->userandom=FALSE;
+			if(i+4<argc){
+				options->key[0]=strtoull(argv[i+1],NULL,16);
+				options->key[1]=strtoull(argv[i+2],NULL,16);
+				options->key[2]=strtoull(argv[i+3],NULL,16);
+				options->key[3]=strtoull(argv[i+4],NULL,16);
+				i++;
+			}
+		}
+		if(strcmp(argv[i],"-n")==0){
+			if(i+1<argc){
+				options->amount=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+
+		}
+		if(strcmp(argv[i],"-seed")==0){
+			if(i+1<argc){
+				options->seed=strtoull(argv[i+1],NULL,0);
+				i++;
+			}
+		}
+	}	
 }
 
 void parse_ts_arguments(int argc,char** argv,input_options* options){
@@ -401,7 +447,17 @@ void print_test_options(char *name){
 	fprintf(stdout,"example: %s -i input.data -o report.data -key 0x4A99E951 0x3EA4EB1A 0x3D471817 0x067EAD6F\n",name);
 	fprintf(stdout,"\n");	
 }
-
+void print_generate_options(char *name){
+	fprintf(stdout,"Usage: %s -seed <long> -n <int> [options]\n",name);
+	fprintf(stdout,"\n");
+	fprintf(stdout,"options: \n");
+	fprintf(stdout,"-o <out_file>\t generate outputs to a file \n");
+	fprintf(stdout,"-key <hexa_blocks>\t use given key instead a random key \n");
+	fprintf(stdout,"\n");
+	fprintf(stdout,"example: %s -seed 2838898 -n 1000 -key 0x4A99E951 0x3EA4EB1A 0x3D471817 0x067EAD6F -o generated.data \n",name);
+	fprintf(stdout,"example: %s -seed 2838898 -n 1000 -o generated.data \n",name);
+	fprintf(stdout,"\n");
+}
 void print_bit(unsigned long nume){
 	int i;
 	unsigned long bit=1;
@@ -514,7 +570,7 @@ void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"\n");
 }
 void print_init_test_matrix(ts_params *params,input_options *options,FILE *file){
-	fprintf(file,"%lld\t%lld\t%.02f\t",params->tabu_iterations,params->tabu_list_length,params->key_eval_percent);
+	fprintf(file,"%lld\t%lld\t%.02f\t%lld\t",params->tabu_iterations,params->tabu_list_length,params->key_eval_percent,params->tabu_max_decrease);
 }
 void print_end_test_matrix(final_report *report,FILE *file){
 	fprintf(file,"%08lX %08lX\t%.02f\t%08lX %08lX\t%.02f\t%d\t%d\t%.02f\t%.02f\t%0.2f\t%.02f\n"
@@ -526,7 +582,7 @@ void print_end_test_matrix(final_report *report,FILE *file){
 	);
 }
 void print_mold_test_matrix(FILE *file){
-	fprintf(file,"TS ITER\tTS TL\tTS EP\t\t BR L\t\tBRL S\tBR R\t\t\tBRR S\tBRLITER\tBRRITER\tBRLPG\tBRRPG\tBRLT\tBRRT\n");
+	fprintf(file,"TS ITER\tTS TL\tTS EP\tMDEC\t\t BR L\t\tBRL S\tBR R\t\t\tBRR S\tBRLITER\tBRRITER\tBRLPG\tBRRPG\tBRLT\tBRRT\n");
 }
 void print_end(final_report *report,FILE *file){
 	fprintf(file,"\n");
