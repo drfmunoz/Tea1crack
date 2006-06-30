@@ -8,39 +8,29 @@
 #include "io.h"
 #include "types.h"
 
-/*! Tabus Search movement alpha: change the ith bit of one 32 bit key block.
- * \param key
- * \param list
- * \param mistakes
- * \param control
- * \param founded
- * \param best
- * \param params
- * \param report
- * \param cpmess
- * \param block
+/** Tabus Search movement alpha: change the ith bit of one 32 bit key block, it also get the value for evaluation function and put the best movement value into tabu list.<br>
+	first movement:<br>
+	generate only 32 bits movements for 32 bits block key[1] and key[3]  moving with left bits shift XOR.<br>
+	example:<br>
+			010101010101^000000000001=010101010100<br>
+			<br>
+			000000000001 << 1 = 000000000010<br>
+			<br>
+			010101010101^000000000010=010101010111<br>
+			<br>
+			and so on.<br>
+ * \param key Key for this movement (a 128 bit key in 4 blocks of 32 bits)
+ * \param list  Tabu list for this move, corresponding to current key block
+ * \param mistakes Mistakes counter tracker
+ * \param control Control wich element is the next in the tabu list
+ * \param founded If the element was founded
+ * \param best The current best result
+ * \param params General parameter for tabu search 
+ * \param report Report generator
+ * \param cpmess Ciphers and Plain messages
+ * \param block name for this block (LEFT OR RIGHT)
  */
 void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *founded,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block){
-	/*
-		first movement:
-		generate only 32 bits movements for 32 bits block key[1] and key[3]  moving with left bits shift XOR.
-		
-		example:
-				010101010101
-			^	000000000001
-				------------
-				010101010100
-				
-				000000000001 << 1 = 000000000010
-				
-				010101010101
-			^	000000000010
-				------------
-				010101010111
-				
-				and so on.
-	*/
-
 	unsigned int i,j;
 	unsigned long bits=2;
 	unsigned long keys[TEA_DUAL_BLOCK];
@@ -137,29 +127,28 @@ void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsig
 	}
 	(report->print_middle)(keys[position],score,position,block,list->name,stderr);
 }
+/** Tabus Search movement beta: swap ith bit with ith+1 bit of one 32 bit key block, it also get the value for evaluation function and put the best movement value into tabu list.<br>
+	second movement:<br>
+	generate only 31 bits movements for 32 bits block key[1] and key[3]  swaping different bits.<br>
+	(if two bits are equals, then no move... bit pairs 00 or 11 generate no move)<br>
+	example:<br>
+			010101010101&nbsp;swap&nbsp1=010101010110<br>
+			010101010101&nbsp;swap&nbsp2=010101010011<br>
+			and so on.
 
+everything in this movement its like fisrt movement, but the movement it self changes.
+ * \param key Key for this movement (a 128 bit key in 4 blocks of 32 bits)
+ * \param list  Tabu list for this move, corresponding to current key block
+ * \param mistakes Mistakes counter tracker
+ * \param control Control wich element is the next in the tabu list
+ * \param founded If the element was founded
+ * \param best The current best result
+ * \param params General parameter for tabu search 
+ * \param report Report generator
+ * \param cpmess Ciphers and Plain messages
+ * \param block Name for this block (LEFT OR RIGHT)
+ */
 void move_beta(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *founded,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block){
-	/*
-		second movement:
-		generate only 31 bits movements for 32 bits block key[1] and key[3]  swaping different bits.
-		(if two bits are equals, then no move... bit pairs 00 or 11 generate no move)
-		example:
-				010101010101
-					swap 1
-				------------
-				010101010110
-				
-				010101010101
-					swap 2
-				------------
-				010101010011	
-
-				
-				and so on.
-	
-	everything in this movement its like fisrt movement, but the movement it self changes.
-	*/
-
 	unsigned int i,j;
 	unsigned long bits=2;
 	unsigned long keys[TEA_DUAL_BLOCK];
@@ -256,8 +245,35 @@ void move_beta(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsign
 	}
 	(report->print_middle)(keys[position],score,position,block,list->name,stderr);
 }
+/**in order to accomplish the key generation its necesary to compare the bits mirror
+		from right to left, and select the worst score betwen all comparision of all keys
+		it's means if a key have 3 points and another 2, our best score is 2 with some percent of
+		accuracy.<br>
+		
+		(remember the best score is the worst one)<br><br>
+		
+		also its necesary that the bits be in correlativo order that means<br>
+		
+		10100100001 & 10101011011=10100000001     < --- this have just one bit of coincidences
+		
+		10100100001
+		10101011001
+		-----------
+		10100000001     	
+		01010000110
+		11110000111		< --- this have three bit of coincidence	
+		
+		
+		take just the equals bits (no matter if 0 or 1), its must be equals and correlatives.
+ *
+ * \param key Key to evaluate
+ * \param cpmess Ciphers and Plain messages
+ * \param block Name for this block (LEFT OR RIGHT)
+ * \param report Report generator
+ * \param params General parameter for tabu search
+ */
 
-float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report *report,ts_params *params){
+float evaluate(unsigned long key,cipher_cont *cpmess,int block,output_report *report,ts_params *params){
  	/*
 		in order to accomplish the key generation its necesary to compare the bits mirror 
 		from right to left, and select the worst score betwen all comparision of all keys
@@ -300,7 +316,7 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 		exit(1);
 	}
 	
-	if(direction==LEFT){
+	if(block==LEFT){
 		composed_key[1]=key;
 	}
 	else{
@@ -315,7 +331,7 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 	}
 	
 	for(i=0;i<(cpmess[0].size_array);i++){
-		if(direction==LEFT){
+		if(block==LEFT){
 			gamma_tea(cpmess[i].plain_message,cpmess[i].cipher_message,composed_key);
 			key_compare[i]=composed_key[0];
 		}
@@ -326,7 +342,7 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 		if(report->options->paranoid_leve>3){
 			report->pardeb->key=key;
 			report->pardeb->bit=i;
-			report->pardeb->block=direction;
+			report->pardeb->block=block;
 			report->pardeb->evalkey=key_compare[i];
 		}
 		(report->print_paranoid_all)(report->pardeb,stderr);
@@ -375,7 +391,12 @@ float evaluate(unsigned long key,cipher_cont *cpmess,int direction,output_report
 	free((char *)key_compare);
 	return(value);
 }
+/**
+ * \param cpmess
+ * \param options
+ * \param report
 
+ */
 void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report){
 	
 	
