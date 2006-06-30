@@ -1,13 +1,22 @@
+/** 
+ * \file main.c
+ * \brief Main Tabu Search program
+ * \ingroup all
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT License
+ */
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "tea.h"
 #include "tabu_search.h"
 #include "io.h"
 #include "types.h"
-
-
-
+/**
+ * Main Tabu Search for TEA application execution program.
+ * \param arcg number of input arguments
+ * \param argv input argument string
+ */
 int main(int argc,char** argv){
 	
 	input_options *options;

@@ -1,0 +1,26 @@
+TABU SEARCH IMPLEMENTATION TO BREAK TEA1 (1 cycle Tiny encryption algorithm )
+-----------------------------------------
+
+executable programs:
+
+ts:           Tabu search main program
+generate:     Generate a set of cipher-plain messages for test TEA1 TS.
+ts_full_test: Generate a Tabu Search test matrix varying TS input parameters.
+test:         Test a Key candidate over a set of cipher-plain messages.
+
+THE BACKGROUND
+--------------
+put some content here...
+
+USAGE
+-----
+put some content here...
+
+SOURCES
+-------
+
+source code under Mercurial repository : http://www.inf.utfsm.cl/~frmunoz/code/ts
+Mercurial: http://www.selenic.com/mercurial
+Teoretical Backgruond: http:://www.inf.utfsm.cl/~frmunoz/research/tea
+
+

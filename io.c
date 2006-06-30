@@ -2,6 +2,9 @@
  * \file io.c
  * \brief input output functions
  * \ingroup io
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+  * \license <br> This code can be re-distributed under MIT License
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +18,7 @@
  * \param filename Filename of input file
  */
 cipher_cont* read_input(char* filename)
-{
+{ 
 	
 	FILE *infile;
 	
@@ -97,10 +100,10 @@ input_options* convert_full_test_opt_to_gen(full_test_input_options* options)
 	return(t_options);
 }
 /**
- *
- * \param argc
- * \param argv
- * \param options
+ * Parse full test input arguments and mold it into full_test_input_options structure
+ * \param argc ANSI C program input parameters count
+ * \param argv ANSI C program input string
+ * \param options Where to put options in parameters
  */
 void parse_full_test_arguments(int argc,char** argv,full_test_input_options* options)
 {
@@ -267,10 +270,10 @@ void parse_full_test_arguments(int argc,char** argv,full_test_input_options* opt
 	}            
 }
 /**
- *
- * \param argc
- * \param argv
- * \param options
+ * Parse cipher test input arguments and mold it into test_input_options structure
+ * \param argc ANSI C program input parameters count
+ * \param argv ANSI C program input string
+ * \param options Where to put options in parameters
  */
 void parse_test_arguments(int argc,char** argv,test_input_options* options)
 {
@@ -319,10 +322,10 @@ void parse_test_arguments(int argc,char** argv,test_input_options* options)
 	}
 }
 /**
- *
- * \param argc
- * \param argv
- * \param options
+ * Parse TEA generation input arguments and mold it into generate_iptions structure
+ * \param argc ANSI C program input parameters count
+ * \param argv ANSI C program input string
+ * \param options Where to put options in parameters
  */
 void parse_generate_arguments(int argc,char** argv,generate_options *options)
 {
@@ -381,10 +384,10 @@ void parse_generate_arguments(int argc,char** argv,generate_options *options)
 	}	
 }
 /**
- *
- * \param argc
- * \param argv
- * \param options
+ * Parse Tabu Search input arguments and mold it into input_options structure
+ * \param argc ANSI C program input parameters count
+ * \param argv ANSI C program input string
+ * \param options Where to put options in parameters
  */
 void parse_ts_arguments(int argc,char** argv,input_options* options)
 {
@@ -408,7 +411,8 @@ void parse_ts_arguments(int argc,char** argv,input_options* options)
 		if(strcmp(argv[i],"-i")==0)
 		{
 			options->have_input=TRUE;
-			if(i+1<argc){	
+			if(i+1<argc)
+			{	
 				strcpy(options->inputfile,argv[i+1]);
 				i++;
 			}
@@ -489,7 +493,12 @@ void parse_ts_arguments(int argc,char** argv,input_options* options)
 		}	
 	}
 }
-void print_full_test_options(char *name){
+/**
+ * Print full test usage and options
+ * \param name Name for executable
+ */
+void print_full_test_options(char *name)
+{
 	fprintf(stdout,"Usage: %s -i <input_file> [options]\n",name);
 	fprintf(stdout,"\n");
 	fprintf(stdout,"options: \n");
@@ -513,7 +522,12 @@ void print_full_test_options(char *name){
 	fprintf(stdout,"example: %s -i input.data -o report.data -maxtstl 32 -maxtsiter 5000 -maxtsmdec 64 -maxtschm 4 -itstl 1 -itsiter 200 -itsmdec 10 -itschm 1 -vartstl 2 -vartsiter 100 -vartsmdec 4 -vartschm 1 -mintskep 1 -vartskep 5\n",name);
 	fprintf(stdout,"\n");
 }
-void print_ts_options(char *name){
+/**
+ * Print Tabu Search usage and options
+ * \param name Name for executable
+ */
+void print_ts_options(char *name)
+{
 	fprintf(stdout,"Usage: %s -i <input_file> [options] [tabu_search_opts]\n",name);
 	fprintf(stdout,"\n");
 	fprintf(stdout,"options: \n");
@@ -538,7 +552,12 @@ void print_ts_options(char *name){
 	fprintf(stdout,"example: %s -i input.data -o report.data -iter -mop -paranoid 4\n",name);
 	fprintf(stdout,"\n");
 }
-void print_test_options(char *name){
+/**
+ * Print cipher test usage and options
+ * \param name Name for executable
+ */
+void print_test_options(char *name)
+{
 	fprintf(stdout,"Usage: %s -i <input_file> [options] -key hexa_key\n",name);
 	fprintf(stdout,"\n");
 	fprintf(stdout,"options: \n");
@@ -547,44 +566,32 @@ void print_test_options(char *name){
 	fprintf(stdout,"example: %s -i input.data -o report.data -key 0x4A99E951 0x3EA4EB1A 0x3D471817 0x067EAD6F\n",name);
 	fprintf(stdout,"\n");	
 }
-void print_generate_options(char *name){
-	fprintf(stdout,"Usage: %s -seed <long> -n <int> [options]\n",name);
-	fprintf(stdout,"\n");
-	fprintf(stdout,"options: \n");
-	fprintf(stdout,"-o <out_file>\t generate outputs to a file \n");
-	fprintf(stdout,"-key <hexa_blocks>\t use given key instead a random key \n");
-	fprintf(stdout,"\n");
-	fprintf(stdout,"example: %s -seed 2838898 -n 1000 -key 0x4A99E951 0x3EA4EB1A 0x3D471817 0x067EAD6F -o generated.data \n",name);
-	fprintf(stdout,"example: %s -seed 2838898 -n 1000 -o generated.data \n",name);
-	fprintf(stdout,"\n");
+/**
+ * Print generate usage and options
+ * \param name Name for executable
+ */
+void print_generate_options(char *name)
+{
 }
-void print_bit(unsigned long nume){
-	int i;
-	unsigned long bit=1;
-	char num[33];
-	for(i=0;i<32;i++){
-		if(nume&bit){
-			num[31-i]='1';
-		}
-		else{
-			num[31-i]='0';
-		}
-		bit=bit<<1;
-	}
-	printf("%s\n",num);
-}
-
-output_report *open_report(input_options *options){
+/**
+ * Create a new report creator and bind the correct function in accord with options
+ * \param options Tabu Search general input options
+ */
+output_report *open_report(input_options *options)
+{
 	
 	output_report *report;
 	
-	if((report=MALLOC(output_report))==NULL){
+	if((report=MALLOC(output_report))==NULL)
+	{
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 		exit(1);
 	}
 	
-	if(options->save_output){
-		if(!(report->report_file=fopen(options->outfile,"w+"))){
+	if(options->save_output)
+	{
+		if(!(report->report_file=fopen(options->outfile,"w+")))
+		{
 			fprintf(stderr,"ERROR: CANNOT CREATE REPORT OUTPUT FILE: %s\n",options->outfile);
 			exit(1);
 		}
@@ -605,34 +612,39 @@ output_report *open_report(input_options *options){
 		report->print_iteration=(void *)&print_iteration;
 	else
 		report->print_iteration=(void *)&void_print_iteration;
-	if(options->paranoid_leve==4){
+	if(options->paranoid_leve==4)
+	{
 		report->print_paranoid=(void *)&print_paranoid;
 		report->print_paranoid_move=(void *)&print_paranoid_move;
 		report->print_paranoid_eval=(void *)&print_paranoid_eval;
 		report->print_paranoid_all=(void *)&print_paranoid_all;
 	}
-	if(options->paranoid_leve==3){
+	if(options->paranoid_leve==3)
+	{
 		report->print_paranoid=(void *)&print_paranoid;
 		report->print_paranoid_move=(void *)&print_paranoid_move;
 		report->print_paranoid_eval=(void *)&print_paranoid_eval;
 		report->print_paranoid_all=(void *)&void_print_paranoid_all;
 	}
 	else{
-		if(options->paranoid_leve==2){
+		if(options->paranoid_leve==2)
+		{
 			report->print_paranoid=(void *)&print_paranoid;
 			report->print_paranoid_move=(void *)&print_paranoid_move;
 			report->print_paranoid_eval=(void *)&void_print_paranoid_eval;
 			report->print_paranoid_all=(void *)&void_print_paranoid_all;
 		}
 		else{
-			if(options->paranoid_leve==1){
+			if(options->paranoid_leve==1)
+			{
 				report->print_paranoid=(void *)&print_paranoid;
 				report->print_paranoid_move=(void *)&void_print_paranoid_move;
 				report->print_paranoid_eval=(void *)&void_print_paranoid_eval;
 				report->print_paranoid_all=(void *)&void_print_paranoid_all;
 			}
 			else{
-				if(options->paranoid_leve==0){
+				if(options->paranoid_leve==0)
+				{
 					report->print_paranoid=(void *)&void_print_paranoid;
 					report->print_paranoid_move=(void *)&void_print_paranoid_move;
 					report->print_paranoid_eval=(void *)&void_print_paranoid_eval;
@@ -643,22 +655,41 @@ output_report *open_report(input_options *options){
 	}
 	return(report);
 }
-void close_report(output_report *report){
+/**
+ * Close output file for given report
+ * \param report Report generator
+ */
+void close_report(output_report *report)
+{
 	if(report->options->save_output){
 		fclose(report->report_file);
 	}
 }
-void report_use_test_matrix(output_report *report){
+/**
+ * Change report binding to use test matrix
+ * \param report Report generator
+ */
+void report_use_test_matrix(output_report *report)
+{
 	report->print_init=(void *)&print_init_test_matrix;
 	report->print_end=(void *)&print_end_test_matrix;
 }
-void print_init(ts_params *params,input_options *options,FILE *file){
+/**
+ * Print initial asignation for Tabu Search
+ * \param params Paramenter of Tabu Search
+ * \param options Tabu Search general input options
+ * \param file File to print
+ */
+void print_init(ts_params *params,input_options *options,FILE *file)
+{
 	fprintf(file,"\n");
 	fprintf(file,"INPUT FILE:\t\t\t %s\n",options->inputfile);
-	if(options->save_output==FALSE){
+	if(options->save_output==FALSE)
+	{
 		fprintf(file,"SAVE REPORT TO FILE:\t\t\t OFF\n");
 	}
-	else{
+	else
+	{
 		fprintf(file,"SAVE REPORT TO FILE:\t\t ON\n");
 		fprintf(file,"OUTPUT FILE:\t\t\t%s\n",options->outfile);
 	}
@@ -669,10 +700,23 @@ void print_init(ts_params *params,input_options *options,FILE *file){
 	fprintf(file,"TABU KEY EVALUATION PERCENT:\t\t %f\n",params->key_eval_percent);
 	fprintf(file,"\n");
 }
-void print_init_test_matrix(ts_params *params,input_options *options,FILE *file){
+/**
+ * Print initial asignation for Tabu Search in output text matrix
+ * \param params Paramenter of Tabu Search
+ * \param options Tabu Search general input options
+ * \param file File to print
+ */
+void print_init_test_matrix(ts_params *params,input_options *options,FILE *file)
+{
 	fprintf(file,"%lld\t%lld\t%.02f\t%lld\t",params->tabu_iterations,params->tabu_list_length,params->key_eval_percent,params->tabu_max_decrease);
 }
-void print_end_test_matrix(final_report *report,FILE *file){
+/**
+ * Print each step Tabu Search for test matrix
+ * \param report Report generator
+ * \param file File to print
+ */
+void print_end_test_matrix(final_report *report,FILE *file)
+{
 	fprintf(file,"%08lX %08lX\t%.02f\t%08lX %08lX\t%.02f\t%d\t%d\t%.02f\t%.02f\t%0.2f\t%.02f\n"
 	,report->left->key[0],report->left->key[1],report->left->value
 	,report->right->key[0],report->right->key[1],report->right->value
@@ -681,21 +725,32 @@ void print_end_test_matrix(final_report *report,FILE *file){
 	,difftime(report->end_left,report->init_left),difftime(report->end_right,report->init_right)
 	);
 }
-void print_mold_test_matrix(FILE *file){
+/**
+ * Print initial significant keyswords for test matrix 
+ * \param file File to print
+ */
+void print_mold_test_matrix(FILE *file)
+{
 	fprintf(file,"TS ITER\tTS TL\tTS EP\tMDEC\t\t BR L\t\tBRL S\tBR R\t\t\tBRR S\tBRLITER\tBRRITER\tBRLPG\tBRRPG\tBRLT\tBRRT\n");
 }
-void print_end(final_report *report,FILE *file){
+/**
+ * Print final report of Tabu Search
+ * \param report Report generator
+ * \param file File to print
+ */
+void print_end(final_report *report,FILE *file)
+{
 	fprintf(file,"\n");
 	fprintf(file,"FINAL REPORT\n");
 	fprintf(file,"BEST LEFT RESULT: %08lX %08lX\n",report->left->key[0],report->left->key[1]);
 	fprintf(file,"BEST RIGHT RESULT: %08lX %08lX\n",report->right->key[0],report->right->key[1]);
 	fprintf(file,"BEST LEFT SCORE: %f\n",report->left->value);
 	fprintf(file,"BEST RIGHT SCORE: %f\n",report->right->value);
-	//fprintf(file,"BEST LEFT RESULT PG TIME: %f\n",report->clock_left);
-	//fprintf(file,"BEST RIGHT RESULT PG TIME: %f\n",report->clock_right);
+	fprintf(file,"BEST LEFT RESULT PG TIME: %f\n",(float)(report->clock_left/CLOCKS_PER_SEC));
+	fprintf(file,"BEST RIGHT RESULT PG TIME: %f\n",(float)(report->clock_right/CLOCKS_PER_SEC));
 	fprintf(file,"BEST LEFT RESULT TIME: %f\n",difftime(report->end_left,report->init_left));
 	fprintf(file,"BEST RIGHT RESULT TIME: %f\n",difftime(report->end_right,report->init_right));
-	//fprintf(file,"GLOBAL PG TIME: %f\n",report->clock_global);
+	fprintf(file,"GLOBAL PG TIME: %f\n",(float)(report->clock_global/CLOCKS_PER_SEC));
 	fprintf(file,"GLOBAL TIME: %f\n",difftime(report->end_global,report->init_global));
 	fprintf(file,"LEFT KEY RESTART: %d\n",report->restart_left_control);
 	fprintf(file,"RIGHT KEY RESTART: %d\n",report->restart_right_control);
@@ -705,16 +760,35 @@ void print_end(final_report *report,FILE *file){
 	fprintf(file,"RIGHT ITERATION: %d\n",report->right_iter);
 	fprintf(file,"\n");
 }
-/* print middle operations for tabu serah */
-void print_middle(unsigned long key,float score,unsigned int bit,int block,int tabuname,FILE *file){
+/**
+ * Print step by step middle operation for Tabu Search
+ * \param key Key in given step
+ * \param score Score for given step
+ * \param bit Bit changed in this step
+ * \param block Block for this step {LEFT,RIGHT}
+ */
+void print_middle(unsigned long key,float score,unsigned int bit,int block,int tabuname,FILE *file)
+{
 	fprintf(file,"->KEY:%08lX\t SCORE:%.02f\t BIT:%d\t BLOCK:%d\t TABU:%d\n",key,score,bit,block,tabuname);
 }
-
-void print_iteration(best_result *best,int iter,int block,FILE *file){
+/**
+ * Print iteration step values
+ * \param best Best result until this iteration
+ * \param iter Iteration number
+ * \param block Block for this iteration {LEFT,RIGHT}
+ * \param file File to print
+ */
+void print_iteration(best_result *best,int iter,int block,FILE *file)
+{
 	fprintf(file,"BEST:%08lX\t SCORE:%.02f\t ITER:%d\t BLOCK:%d\n",best->key[1],best->value,block,iter);
 }
-
-void print_paranoid(paranoid *paranoid,FILE *file){
+/**
+ * Print really paranoid step debug, include key movement values, and tabu list
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void print_paranoid(paranoid *paranoid,FILE *file)
+{
 	unsigned int name;
 	fprintf(file,"->KEY:%08lX\t BLOCK:%d\t TABU LIST ELEMENT:%d\n",paranoid->key,paranoid->block,paranoid->tabu);
 	name=paranoid->list->name;
@@ -726,29 +800,84 @@ void print_paranoid(paranoid *paranoid,FILE *file){
 		paranoid->list=paranoid->list->next;
 	}
 }
-
-void print_paranoid_move(paranoid *paranoid,FILE *file){
+/**
+ * Print really paranoid step debug, include movement middle key values and evaluation value
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void print_paranoid_move(paranoid *paranoid,FILE *file)
+{
 	fprintf(file,"-->KEY:%08lX\tSCORE:%.02f\tBIT:%d\tBLOCK:%d\n",paranoid->key,paranoid->score,paranoid->bit,paranoid->block);
 }
-
-void print_paranoid_eval(paranoid *paranoid,FILE *file){
+/**
+ * Print really paranoid step debug for evaluation function
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void print_paranoid_eval(paranoid *paranoid,FILE *file)
+{
 	fprintf(file,"--->BIT:%d\tPERCENT:%d\tONES:%d\tZEROS:%d\tELEMET:%d\n",paranoid->bit,paranoid->percent,paranoid->ones,paranoid->zeros,paranoid->element);
 }
-
-void print_paranoid_all(paranoid *paranoid,FILE *file){
+/**
+ * Print really paranoid step debug for evaluation function, include block key generation
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void print_paranoid_all(paranoid *paranoid,FILE *file)
+{
 	fprintf(file,"--->KEY:%08lX\tKEYNUM:%d\tBLOCK:%d\tEVALKEY:%08lX\n",paranoid->key,paranoid->bit,paranoid->block,paranoid->evalkey);
 }
 
-/* void printing for non-print function pointer asigment */
-void void_print_middle(unsigned long key,float score,unsigned int bit,int block,int tabuname,FILE *fp){
+
+/**
+ * DO NOTHING!
+ * \param key Key in given step
+ * \param score Score for given step
+ * \param bit Bit changed in this step
+ * \param block Block for this step {LEFT,RIGHT}
+ */
+void void_print_middle(unsigned long key,float score,unsigned int bit,int block,int tabuname,FILE *fp)
+{
 }
-void void_print_iteration(best_result *best,int block,int iter,FILE *fp){
+/**
+ * DO NOTHING!
+ * \param best Best result until this iteration
+ * \param iter Iteration number
+ * \param block Block for this iteration {LEFT,RIGHT}
+ * \param file File to print
+ */
+void void_print_iteration(best_result *best,int block,int iter,FILE *fp)
+{
 }
-void void_print_paranoid(paranoid *paranoid,FILE *fp){
+/**
+ * DO NOTHING!
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void void_print_paranoid(paranoid *paranoid,FILE *fp)
+{
 }
-void void_print_paranoid_move(paranoid *paranoid,FILE *fp){
+/**
+ * DO NOTHING!
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void void_print_paranoid_move(paranoid *paranoid,FILE *fp)
+{
 }
-void void_print_paranoid_eval(paranoid *paranoid,FILE *fp){
+/**
+ * DO NOTHING!
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void void_print_paranoid_eval(paranoid *paranoid,FILE *fp)
+{
 }
-void void_print_paranoid_all(paranoid *paranoid,FILE *fp){
+/**
+ * DO NOTHING!
+ * \param paranoid Paranoid data
+ * \param file File to print
+ */
+void void_print_paranoid_all(paranoid *paranoid,FILE *fp)
+{
 }

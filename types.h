@@ -2,6 +2,9 @@
  * \file types.h
  * \brief types definition for all components of TS application
  * \ingroup all
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT Licence
  */
 #ifndef _STRUCTS_TYPES_HEADER_
 #define _STRUCTS_TYPES_HEADER_

@@ -1,3 +1,11 @@
+/** 
+ * \file ts_full_test.c
+ * \brief Full test for tabu search
+ * \ingroup all
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT License
+ */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,7 +15,11 @@
 #include "types.h"
 #include "ts_full_test.h"
 
-
+/**
+ * Generate a test matrix for tabu search over TEA1, varying Tabu Search parameters
+ * \param arcg number of input arguments
+ * \param argv input argument string
+ */
 int main(int argc,char** argv){
 	
 	input_options *options;
@@ -105,9 +117,8 @@ int main(int argc,char** argv){
 	report=open_report(options);
 	report_use_test_matrix(report);
 	/* read input from file */	
-
 	cipher=read_input(test_options->inputfile);
-	/* perform tabu search */
+	/* tabu serach parameters asignation */
 	tabu_iterations=test_options->min_key_eval_percent;
 	tabu_list_length=test_options->init_tabu_list_length;
 	tabu_max_decrease=test_options->init_tabu_max_decrease;
@@ -120,17 +131,25 @@ int main(int argc,char** argv){
 	
 	if(options->save_output)
 		print_mold_test_matrix(report->report_file);
+	/* iterative test matrix */
 	while(lock){
-		options->tabu_list_length=tabu_list_length;  /* tabu list lenght (DEFAULT 0) */
+		/* tabu search parameters refactory*/
+		options->tabu_list_length=tabu_list_length;   /* tabu list lenght (DEFAULT 0) */
 		options->tabu_iterations=tabu_iterations;	  /* tabu iterations (DEFAULT 0) */
 		options->tabu_max_decrease=tabu_max_decrease; /* tabu performance max decrease (DEFAULT 0) */
-		options->key_eval_percent=key_eval_percent;               /* percer for evaluation key */
+		options->key_eval_percent=key_eval_percent;   /* percer for evaluation key */
 		options->change_move_limit=change_move_limit;
+		/* perform tabu search */
 		tabusearch(cipher,options,report);
+		/* use iteration test */
 		if(tabu_iterations<=test_options->max_tabu_iterations+1){
+			/* use list lenght test */
 			if(tabu_list_length<=test_options->max_tabu_list_length){
+				/* use key percent test */
 				if(key_eval_percent<=1){
+					/* use performance decreace test */
 					if(tabu_max_decrease<test_options->max_tabu_max_decrease){
+						/* use change movement limit test */
 						if(change_move_limit<test_options->max_change_move_limit){
 							change_move_limit+=test_options->var_change_move_limit;
 						}

@@ -2,6 +2,9 @@
  * \file io.h
  * \brief input output constant and functions definition
  * \ingroup io
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT License
  */
 #ifndef _IO_HEADER_
 #define _IO_HEADER_
@@ -22,7 +25,6 @@ void print_ts_options(char*);
 void print_test_options(char*);
 void print_full_test_options(char *);
 void print_generate_options(char *);
-void print_bit(unsigned long nume);
 void print_init(ts_params *,input_options *,FILE *);
 void print_end(final_report *,FILE *);
 void print_init_test_matrix(ts_params *,input_options *options,FILE *);

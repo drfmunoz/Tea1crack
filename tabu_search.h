@@ -2,6 +2,9 @@
  * \file tabu_search.h
  * \brief tabu search constants and function prototypes
  * \ingroup tabus_search
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT License
  */
 #ifndef _TABUSEARCH_HEADER_
 #define _TABUSEARCH_HEADER_

@@ -1,9 +1,21 @@
+/** 
+ * \file test.c
+ * \brief Test a key in TEA
+ * \ingroup all
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT License
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "tea.h"
 #include "io.h"
 #include "types.h"
-
+/**
+ * Key test program for TEA cipher. (given a key, it's will test the key over a set of cipher-plain messages)
+ * \param arcg number of input arguments
+ * \param argv input argument string
+ */
 int main(int argc,char **argv){
 	test_input_options *options;
 	

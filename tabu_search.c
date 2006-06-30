@@ -2,6 +2,9 @@
  * \file tabu_search.c
  * \brief Tabu Search functions
  * \ingroup tabus_search
+ * \author Freddy Mun~oz Ramirez <frmunoz(at)inf.utfsm.cl>
+ * \date Autumn 2006
+ * \license <br> This code can be re-distributed under MIT License
  */
 #include <stdio.h>
 #include <stdlib.h>
