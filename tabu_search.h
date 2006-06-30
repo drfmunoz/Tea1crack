@@ -70,7 +70,7 @@ void move_alpha(unsigned long *,tabu_list *,unsigned long *,unsigned int *,unsig
 void move_beta(unsigned long *,tabu_list *,unsigned long *,unsigned int *,unsigned int *,best_result *,ts_params *,output_report *,cipher_cont *,int);
 float evaluate(unsigned long,cipher_cont *,int,output_report *,ts_params *);
 void tabusearch(cipher_cont *,input_options *,output_report *);
-void generate_initial_solution(unsigned long *,cipher_cont *);
+void generate_initial_solution(unsigned long *);
 void restart_left(unsigned long *);
 void restart_right(unsigned long *);
 ts_params *create_params(input_options *);

@@ -42,6 +42,7 @@ int main(int argc,char **argv){
 		
 		
 	for(i=0;i < (cipher[0].size_array)-1;i++){
+		/* generate cipher and decipher */
 		messcipher[1]=0x0;
 		messcipher[0]=0x0;
 		decipher[1]=0x0;

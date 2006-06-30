@@ -1,20 +1,20 @@
 #ifndef _TEA_HEADER_
 #define _TEA_HEADER_
 
-/*
-* define cicles for TEA
-* 1 cycle defines TEA1
-*/
+
+/** \def TEA_CYCLES                                                                                 
+ * Cycles for TEA                                                                                     
+ */
 #define TEA_CYCLES 1
 
-/*
-* define TEA cypher key schedule
-*/
+/** \def TEA_DELTA_KEY                                                                                 
+ * TEA cypher key schedule                                                                                     
+ */
 #define TEA_DELTA_KEY 0x9E3779B9
 
-/*
-* deine TEA cypher sum
-*/
+/** \def TEA_SUM                                                                                 
+ * TEA cypher sum                                                                                     
+ */
 #define TEA_SUM TEA_DELTA_KEY << 5
 
 /* TEA cypher function */

@@ -1,4 +1,8 @@
-/* some comment */
+/** 
+ * \file io.c
+ * \brief input output functions
+ * \ingroup io
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +10,12 @@
 #include "types.h"
 #include "tabu_search.h"
 
-cipher_cont* read_input(char* filename){
+/**
+ * Read input file and put the content into corresponding structure
+ * \param filename Filename of input file
+ */
+cipher_cont* read_input(char* filename)
+{
 	
 	FILE *infile;
 	
@@ -20,7 +29,8 @@ cipher_cont* read_input(char* filename){
 	
 	char v[255];
 
-	if(!(infile=fopen(filename,"r"))){
+	if(!(infile=fopen(filename,"r")))
+	{
 		fprintf(stderr,"ERROR: failed to open intput file: %s\n",filename);
 		exit(0);	
 	}
@@ -30,7 +40,8 @@ cipher_cont* read_input(char* filename){
 	fscanf(infile,"%s",v);
 	fscanf(infile,"%s",v);
 	
-	while(!feof(infile)){
+	while(!feof(infile))
+	{
 		fscanf(infile,"%s",v);
 		
 		plain[i][1]=strtoull(v+8,NULL,16);
@@ -48,7 +59,8 @@ cipher_cont* read_input(char* filename){
 
 	t_cipher=NMALLOC(i,cipher_cont);
 	
-	for(j=0;j<i;j++){
+	for(j=0;j<i;j++)
+	{
 		t_cipher[j].plain_message[0]=plain[j][0];
 		t_cipher[j].plain_message[1]=plain[j][1];
 		t_cipher[j].cipher_message[0]=cipher[j][0];
@@ -58,9 +70,15 @@ cipher_cont* read_input(char* filename){
 	fclose(infile);
 	return t_cipher;
 }
-input_options* convert_full_test_opt_to_gen(full_test_input_options* options){
+/**
+ * Convert full_test_input_options to input_options
+ * \param options Tabu Serach general input options
+ */
+input_options* convert_full_test_opt_to_gen(full_test_input_options* options)
+{
 	input_options *t_options;
-	if((t_options=MALLOC(input_options))==NULL){
+	if((t_options=MALLOC(input_options))==NULL)
+	{
 		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
 		exit(1);
 	}
@@ -78,16 +96,14 @@ input_options* convert_full_test_opt_to_gen(full_test_input_options* options){
 	t_options->print_iter=FALSE;
 	return(t_options);
 }
-input_options* convert_test_opt_to_gen(test_input_options* options){
-	input_options *t_options;
-	if((t_options=MALLOC(input_options))==NULL){
-		fprintf(stderr,"ERROR: FAILED TO ALLOCATE MEMORY\n");
-		exit(1);
-	}
-
-	return(t_options);	
-}
-void parse_full_test_arguments(int argc,char** argv,full_test_input_options* options){
+/**
+ *
+ * \param argc
+ * \param argv
+ * \param options
+ */
+void parse_full_test_arguments(int argc,char** argv,full_test_input_options* options)
+{
 
 	int i;
 	unsigned long tmp;
@@ -108,76 +124,100 @@ void parse_full_test_arguments(int argc,char** argv,full_test_input_options* opt
 	options->min_key_eval_percent=0;             
 	options->var_key_eval_percent=0;
 	
-	for(i=0;i<argc;i++){
-		if(strcmp(argv[i],"-i")==0){
+	for(i=0;i<argc;i++)
+	{
+		if(strcmp(argv[i],"-i")==0)
+		{
 			options->have_input=TRUE;
-			if(i+1<argc){	
+			if(i+1<argc)
+			{	
 				strcpy(options->inputfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-o")==0){
+		if(strcmp(argv[i],"-o")==0)
+		{
 			options->save_output=TRUE;
 			
-			if(i+1<argc){
+			if(i+1<argc)
+			{
 				strcpy(options->outfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"--help")==0){
+		if(strcmp(argv[i],"--help")==0)
+		{
 			print_full_test_options(argv[0]);
 			exit(0);
 		}
-		if(strcmp(argv[i],"-maxtstl")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-maxtstl")==0)
+		{
+			if(i+1<argc)
+			{
 				options->max_tabu_list_length=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-maxtsiter")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-maxtsiter")==0)
+		{
+			if(i+1<argc)
+			{
 				options->max_tabu_iterations=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-maxtsmdec")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-maxtsmdec")==0)
+		{
+			if(i+1<argc)
+			{
 				options->max_tabu_max_decrease=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-maxtschm")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-maxtschm")==0)
+		{
+			if(i+1<argc)
+			{
 				options->max_change_move_limit=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-itstl")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-itstl")==0)
+		{
+			if(i+1<argc)
+			{
 				options->init_tabu_list_length=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-itsiter")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-itsiter")==0)
+		{
+			if(i+1<argc)
+			{
 				options->init_tabu_iterations=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-itsmdec")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-itsmdec")==0)
+		{
+			if(i+1<argc)
+			{
 				options->init_tabu_max_decrease=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-itschm")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-itschm")==0)
+		{
+			if(i+1<argc)
+			{
 				options->init_change_move_limit=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-vartstl")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-vartstl")==0)
+		{
+			if(i+1<argc)
+			{
 				options->var_tabu_list_length=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
@@ -188,28 +228,36 @@ void parse_full_test_arguments(int argc,char** argv,full_test_input_options* opt
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-vartsmdec")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-vartsmdec")==0)
+		{
+			if(i+1<argc)
+			{
 				options->var_tabu_max_decrease=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-vartschm")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-vartschm")==0)
+		{
+			if(i+1<argc)
+			{
 				options->var_change_move_limit=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-mintskep")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-mintskep")==0)
+		{
+			if(i+1<argc)
+			{
 				tmp=strtoull(argv[i+1],NULL,0);
 				options->min_key_eval_percent=tmp;
 				options->min_key_eval_percent=options->min_key_eval_percent/100;
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-vartskep")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-vartskep")==0)
+		{
+			if(i+1<argc)
+			{
 				tmp=strtoull(argv[i+1],NULL,0);
 				options->var_key_eval_percent=tmp;
 				options->var_key_eval_percent=options->var_key_eval_percent/100;
@@ -218,7 +266,14 @@ void parse_full_test_arguments(int argc,char** argv,full_test_input_options* opt
 		}
 	}            
 }
-void parse_test_arguments(int argc,char** argv,test_input_options* options){
+/**
+ *
+ * \param argc
+ * \param argv
+ * \param options
+ */
+void parse_test_arguments(int argc,char** argv,test_input_options* options)
+{
 	int i;
 	options->save_output=FALSE;
 	options->have_input=FALSE;
@@ -227,28 +282,33 @@ void parse_test_arguments(int argc,char** argv,test_input_options* options){
 	options->key3=0x0;
 	options->key4=0x0;
 	for(i=0;i<argc;i++){
-		if(strcmp(argv[i],"-i")==0){
+		if(strcmp(argv[i],"-i")==0)
+		{
 			options->have_input=TRUE;
-			if(i+1<argc){	
+			if(i+1<argc)
+			{	
 				strcpy(options->inputfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-o")==0){
+		if(strcmp(argv[i],"-o")==0)
+		{
 			options->save_output=TRUE;
-			
-			if(i+1<argc){
+			if(i+1<argc)
+			{
 				strcpy(options->outfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"--help")==0){
+		if(strcmp(argv[i],"--help")==0)
+		{
 			print_test_options(argv[0]);
 			exit(0);
 		}
-		if(strcmp(argv[i],"-key")==0){
-	
-			if(i+4<argc){
+		if(strcmp(argv[i],"-key")==0)
+		{
+			if(i+4<argc)
+			{
 				options->key1=strtoull(argv[i+1],NULL,16);
 				options->key2=strtoull(argv[i+2],NULL,16);
 				options->key3=strtoull(argv[i+3],NULL,16);
@@ -258,30 +318,42 @@ void parse_test_arguments(int argc,char** argv,test_input_options* options){
 		}
 	}
 }
-
-void parse_generate_arguments(int argc,char** argv,generate_options *options){
+/**
+ *
+ * \param argc
+ * \param argv
+ * \param options
+ */
+void parse_generate_arguments(int argc,char** argv,generate_options *options)
+{
 	int i;
 	options->userandom=TRUE;				
 	options->usefile=FALSE;		
 	options->usekey=FALSE;			
 	options->seed=0;			
 	options->amount=0;			
-	for(i=0;i<argc;i++){
-		if(strcmp(argv[i],"-o")==0){
+	for(i=0;i<argc;i++)
+	{
+		if(strcmp(argv[i],"-o")==0)
+		{
 			options->usefile=TRUE;
-			if(i+1<argc){	
+			if(i+1<argc)
+			{	
 				strcpy(options->outfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"--help")==0){
+		if(strcmp(argv[i],"--help")==0)
+		{
 			print_generate_options(argv[0]);
 			exit(0);
 		}
-		if(strcmp(argv[i],"-key")==0){
+		if(strcmp(argv[i],"-key")==0)
+		{
 			options->usekey=TRUE;
 			options->userandom=FALSE;
-			if(i+4<argc){
+			if(i+4<argc)
+			{
 				options->key[0]=strtoull(argv[i+1],NULL,16);
 				options->key[1]=strtoull(argv[i+2],NULL,16);
 				options->key[2]=strtoull(argv[i+3],NULL,16);
@@ -289,23 +361,33 @@ void parse_generate_arguments(int argc,char** argv,generate_options *options){
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-n")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-n")==0)
+		{
+			if(i+1<argc)
+			{
 				options->amount=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 
 		}
-		if(strcmp(argv[i],"-seed")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-seed")==0)
+		{
+			if(i+1<argc)
+			{
 				options->seed=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
 	}	
 }
-
-void parse_ts_arguments(int argc,char** argv,input_options* options){
+/**
+ *
+ * \param argc
+ * \param argv
+ * \param options
+ */
+void parse_ts_arguments(int argc,char** argv,input_options* options)
+{
 	
 	int i;
 	unsigned long tmp=0;
@@ -321,48 +403,61 @@ void parse_ts_arguments(int argc,char** argv,input_options* options){
 	options->middle_op=FALSE;
 	options->print_iter=FALSE;
 	
-	for(i=0;i<argc;i++){
-		if(strcmp(argv[i],"-i")==0){
+	for(i=0;i<argc;i++)
+	{
+		if(strcmp(argv[i],"-i")==0)
+		{
 			options->have_input=TRUE;
 			if(i+1<argc){	
 				strcpy(options->inputfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-o")==0){
+		if(strcmp(argv[i],"-o")==0)
+		{
 			options->save_output=TRUE;
-			
-			if(i+1<argc){
+			if(i+1<argc)
+			{
 				strcpy(options->outfile,argv[i+1]);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-tstl")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-tstl")==0)
+		{
+			if(i+1<argc)
+			{
 				options->tabu_list_length=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-tsiter")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-tsiter")==0)
+		{
+			if(i+1<argc)
+			{
 				options->tabu_iterations=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-tsdesc")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-tsdesc")==0)
+		{
+			if(i+1<argc)
+			{
 				options->tabu_max_decrease=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-tsmch")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-tsmch")==0)
+		{
+			if(i+1<argc)
+			{
 				options->change_move_limit=strtoull(argv[i+1],NULL,0);
 				i++;
 			}
 		}
-		if(strcmp(argv[i],"-tskep")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-tskep")==0)
+		{
+			if(i+1<argc)
+			{
 				tmp=strtoull(argv[i+1],NULL,0);
 				options->key_eval_percent=tmp;
 				options->key_eval_percent=options->key_eval_percent/100;
@@ -370,20 +465,25 @@ void parse_ts_arguments(int argc,char** argv,input_options* options){
 			}
 		}
 		
-		if(strcmp(argv[i],"-mop")==0){
+		if(strcmp(argv[i],"-mop")==0)
+		{
 			options->middle_op=TRUE;
 		}
 		
-		if(strcmp(argv[i],"-paranoid")==0){
-			if(i+1<argc){
+		if(strcmp(argv[i],"-paranoid")==0)
+		{
+			if(i+1<argc)
+			{
 				options->paranoid_leve=(int)strtoull(argv[i+1],NULL,0);
 			}
 		}
-		if(strcmp(argv[i],"-iter")==0){
+		if(strcmp(argv[i],"-iter")==0)
+		{
 			options->print_iter=TRUE;
 		}
 		
-		if(strcmp(argv[i],"--help")==0){
+		if(strcmp(argv[i],"--help")==0)
+		{
 			print_ts_options(argv[0]);
 			exit(0);
 		}	
