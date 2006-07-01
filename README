@@ -17,6 +17,10 @@ USAGE
 
 to get the synopsis of each program, execute the program without parameters.
 
+DOCUMENTATION
+-------------
+All documentation is under doc/ directory.
+
 SOURCES
 -------
 
