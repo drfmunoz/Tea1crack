@@ -610,12 +610,12 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				left_iter=i+1;
 				founded_left=TRUE;
 				bit=1;
-				bit=bit<<30;
+				bit=bit<<31;
 				/* a tricky 31th bit swap */
-				if(!((best_left->key[1]&bit)&&(best_left->key[1]&bit<<1))&&!(((best_left->key[1]^LONG_MAX)&bit)&&((best_left->key[1]^LONG_MAX)&bit<<1))){
+			/*	if(!((best_left->key[1]&bit)&&(best_left->key[1]&bit<<1))&&!(((best_left->key[1]^LONG_MAX)&bit)&&((best_left->key[1]^LONG_MAX)&bit<<1))){
 					best_left->key[1]=best_left->key[1]^bit;
 					best_left->key[1]=best_left->key[1]^bit<<1;
-				}
+				}*/
 
 			}
 			if(mistakes_left>=params->tabu_max_decrease)
@@ -673,12 +673,12 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				right_iter=i+1;
 				founded_right=TRUE;
 				bit=1;
-				bit=bit<<30;
+				bit=bit<<31;
 				/* a tricky 31th bit swap */
-				if(!((best_right->key[1]&bit)&&(best_right->key[1]&bit<<1))&&!(((best_right->key[1]^LONG_MAX)&bit)&&((best_right->key[1]^LONG_MAX)&bit<<1))){
+			/*	if(!((best_right->key[1]&bit)&&(best_right->key[1]&bit<<1))&&!(((best_right->key[1]^LONG_MAX)&bit)&&((best_right->key[1]^LONG_MAX)&bit<<1))){
 					best_right->key[1]=best_left->key[1]^bit;
 					best_right->key[1]=best_left->key[1]^bit<<1;
-				}
+				}*/
 				
 			}
 			if(mistakes_right>=params->tabu_max_decrease)

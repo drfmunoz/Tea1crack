@@ -7,6 +7,8 @@ EXE2	  = test
 TEST	  = test.o  tea.o io.o
 EXE3	  = generate
 GENERATE  = generate.o tea.o io.o
+EXE4	  = correct
+CORRECT   = correct.o tea.o io.o
 EXE5	  = ts_full_test
 FULLTEST  = ts_full_test.o tea.o io.o tabu_search.o
 

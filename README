@@ -10,11 +10,12 @@ test:         Test a Key candidate over a set of cipher-plain messages.
 
 THE BACKGROUND
 --------------
-put some content here...
+The main idea is to break TEA1 using a metaheuristic technique, in this case Tabu Search is used with very good results.
 
 USAGE
 -----
-put some content here...
+
+to get the synopsis of each program, execute the program without parameters.
 
 SOURCES
 -------
