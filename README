@@ -1,6 +1,5 @@
 TABU SEARCH IMPLEMENTATION TO BREAK TEA1 (1 cycle Tiny encryption algorithm )
 -----------------------------------------
-
 executable programs:
 
 ts:           Tabu search main program
@@ -10,7 +9,7 @@ test:         Test a Key candidate over a set of cipher-plain messages.
 
 THE BACKGROUND
 --------------
-The main idea is to break TEA1 using a metaheuristic technique, in this case Tabu Search is used with very good results.
+The main idea is to break TEA1 using a meta-heuristic technique, in this case Tabu Search is used with very good results.
 
 USAGE
 -----
