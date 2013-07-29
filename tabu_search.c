@@ -38,14 +38,14 @@
  * \param list  Tabu list for this move, corresponding to current key block
  * \param mistakes Mistakes counter tracker
  * \param control Control wich element is the next in the tabu list
- * \param founded If the element was founded
+ * \param found If the element was found
  * \param best The current best result
  * \param params General parameter for tabu search 
  * \param report Report generator
  * \param cpmess Ciphers and Plain messages
  * \param block name for this block (LEFT OR RIGHT)
  */
-void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *founded,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block)
+void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *found,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block)
 {
 	
 	unsigned int i,j;
@@ -56,8 +56,8 @@ void move_alpha(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsig
 	unsigned int tabu=FALSE;           /*< if tabu move */
 	unsigned int position=0;
 	
-	/* if this key block has been founded, then skip all operations */
-	if(*founded!=FALSE)
+	/* if this key block has been found, then skip all operations */
+	if(*found!=FALSE)
 	{
 		return;
 	}
@@ -183,14 +183,14 @@ everything in this movement its like fisrt movement, but the movement it self ch
  * \param list  Tabu list for this move, corresponding to current key block
  * \param mistakes Mistakes counter tracker
  * \param control Control wich element is the next in the tabu list
- * \param founded If the element was founded
+ * \param found If the element was found
  * \param best The current best result
  * \param params General parameter for tabu search 
  * \param report Report generator
  * \param cpmess Ciphers and Plain messages
  * \param block Name for this block (LEFT OR RIGHT)
  */
-void move_beta(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *founded,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block)
+void move_beta(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsigned int *control,unsigned int *found,best_result *best,ts_params *params,output_report *report,cipher_cont *cpmess,int block)
 {
 	unsigned int i,j;
 	unsigned long bits=2;
@@ -201,7 +201,7 @@ void move_beta(unsigned long *key,tabu_list *list,unsigned long *mistakes,unsign
 	unsigned int tabu=FALSE;
 	unsigned int position=0;
 	
-	if(*founded!=FALSE)
+	if(*found!=FALSE)
 	{
 		return;
 	}
@@ -468,8 +468,8 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 	unsigned long mistakes_right=0; 		 /*< how many mistakes are in the right serach */
 	unsigned int control_left=0;   			 /*< which is the current modified element in the left list */
 	unsigned int control_right=0;    		 /*< which is the current modified element in the right list */
-	unsigned int founded_left=FALSE; 		 /*< if the left key has been founded */
-	unsigned int founded_right=FALSE;		 /*< if the right key has been founded */
+	unsigned int found_left=FALSE; 		 /*< if the left key has been found */
+	unsigned int found_right=FALSE;		 /*< if the right key has been found */
 	unsigned int restart_left_control=0;  	 /*< restart count for left key block */
 	unsigned int restart_right_control=0;	 /*< restart counter for right key block */
 	unsigned int restart_left_mv_control=0;  /*< restart count for left key block */
@@ -567,7 +567,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 	
 	for(i=0;i<params->tabu_iterations;i++)
 	{
-		if(founded_left==FALSE)
+		if(found_left==FALSE)
 		{
 			/*
 			 * Individual movement selection for left key block 
@@ -596,7 +596,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				report->par->list=list_left;
 			}
 			(report->print_paranoid)(report->par,stderr);
-			(move_left->move)(key,list_left,&mistakes_left,&control_left,&founded_left,best_left,params,report,cpmess,LEFT);
+			(move_left->move)(key,list_left,&mistakes_left,&control_left,&found_left,best_left,params,report,cpmess,LEFT);
 			(report->print_iteration)(best_left,LEFT,i+1,stderr);
 			
 			/*
@@ -608,7 +608,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				time(&end_left_seconds);
 				left_clock=clock();
 				left_iter=i+1;
-				founded_left=TRUE;
+				found_left=TRUE;
 				bit=1;
 				bit=bit<<31;
 				/* a tricky 31th bit swap */
@@ -635,7 +635,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 			}
 		}
 
-		if(founded_right==FALSE)
+		if(found_right==FALSE)
 		{
 			/*
 			 *Individual movement selection for right key block
@@ -660,7 +660,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				report->par->list=list_right;
 			}
 			(report->print_paranoid)(report->par,stderr);
-			(move_right->move)(key,list_right,&mistakes_right,&control_right,&founded_right,best_right,params,report,cpmess,RIGHT);
+			(move_right->move)(key,list_right,&mistakes_right,&control_right,&found_right,best_right,params,report,cpmess,RIGHT);
 			(report->print_iteration)(best_right,RIGHT,i+1,stderr);
 
 			/*
@@ -671,7 +671,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 				time(&end_right_seconds);
 				right_clock=clock();
 				right_iter=i+1;
-				founded_right=TRUE;
+				found_right=TRUE;
 				bit=1;
 				bit=bit<<31;
 				/* a tricky 31th bit swap */
@@ -698,7 +698,7 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 			}
 		}
 		/* if the left and right block converges, then stop */
-		if(founded_left==TRUE&&founded_right==TRUE)
+		if(found_left==TRUE&&found_right==TRUE)
 		{
 			break;
 		}
@@ -710,14 +710,14 @@ void tabusearch(cipher_cont *cpmess,input_options *options,output_report *report
 		free((char *)report->par);
 	}
 	
-	if(founded_left==FALSE)
+	if(found_left==FALSE)
 	{
 		time(&end_left_seconds);
 		left_clock=clock();
 		left_iter=i;
 	}
 
-	if(founded_right==FALSE)
+	if(found_right==FALSE)
 	{
 		time(&end_right_seconds);
 		right_clock=clock();
