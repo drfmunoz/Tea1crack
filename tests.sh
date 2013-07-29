@@ -1,4 +1,5 @@
 #/bin/sh!
+# execute several test to asses te tabu search
 ./ts_full_test  -i data/prob1\ set1.txt -o results/prob1_set1.data -maxtstl 31 -maxtsiter 4000 -maxtsmdec 128 -itstl 10 -itsiter 1000 -itsmdec 64 -vartstl 5 -vartsiter 1000 -vartsmdec 64 -mintskep 10 -vartskep 20
 ./ts_full_test  -i data/prob1\ set2.txt -o results/prob1_set2.data -maxtstl 31 -maxtsiter 4000 -maxtsmdec 128 -itstl 10 -itsiter 1000 -itsmdec 64 -vartstl 5 -vartsiter 1000 -vartsmdec 64 -mintskep 10 -vartskep 20
 ./ts_full_test  -i data/prob1\ set3.txt -o results/prob1_set3.data -maxtstl 31 -maxtsiter 4000 -maxtsmdec 128 -itstl 10 -itsiter 1000 -itsmdec 64 -vartstl 5 -vartsiter 1000 -vartsmdec 64 -mintskep 10 -vartskep 20
