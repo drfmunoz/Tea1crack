@@ -24,8 +24,7 @@ All documentation is under doc/ directory.
 SOURCES
 -------
 
-[deprecated] source code under Mercurial repository : http://www.inf.utfsm.cl/~frmunoz/code/ts
-Mercurial: http://www.selenic.com/mercurial
-[deprecated]Teoretical Backgruond: http:://www.inf.utfsm.cl/~frmunoz/research/tea
+source code Git repository : https://github.com/drfmunoz/Tea1crack
+Converter from Mercurial [http://www.selenic.com/mercurial] to Git
 
 
